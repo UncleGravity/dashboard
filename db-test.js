@@ -122,7 +122,7 @@ const data = [
 ];
 
 async function main() {
-  await setupTable()
+  // await setupTable()
   await save(await getAirData("117"), "awair_id_117");
   await read(500, "awair_id_117");
   // console.log(process.env.POSTGRES_PASSWORD)
