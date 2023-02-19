@@ -4,13 +4,13 @@ const { getAirData, getDevices, getDeviceIdList } = require("./awair-api.js");
 const AIRDATA_TABLE_NAME = "awair_sensor_data";
 
 // Define the connection parameters
+// read from local .env file
 const connectionParams = {
-  user: "postgres",
-  host: "timescaledb",
-  database: "postgres",
-  // read password from local .env file
+  user: process.env.POSTGRES_USER,
+  host: process.env.POSTGRES_URL,
+  database: process.env.POSTGRES_DB,
   password: process.env.POSTGRES_PASSWORD,
-  port: 5432, // or the port number you specified when running the Docker container
+  port: process.env.POSTGRES_PORT, // or the port number you specified when running the Docker container
 };
 
 
