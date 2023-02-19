@@ -100,6 +100,18 @@ async function getDevices() {
   }
 }
 
+async function getDeviceIdList() {
+  const devices = await getDevices();
+
+  const deviceIds = [];
+  for (let i = 0; i < devices.devices.length; i++) {
+    deviceIds.push(devices.devices[i].deviceId);
+  }
+
+  return deviceIds;
+  // console.log(deviceIds); // Output: [19796, 117]
+}
+
 // Extract data from air data response
 /* Response looks like this:
 [
@@ -148,4 +160,4 @@ async function test() {
 
 // test()
 
-module.exports = { getDevices, getAirData };
+module.exports = { getDevices, getAirData, getDeviceIdList };

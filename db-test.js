@@ -1,5 +1,7 @@
 const { Client } = require("pg");
-const { getAirData} = require("./awair-api.js");
+const { getAirData, getDevices, getDeviceIdList } = require("./awair-api.js");
+
+const AIRDATA_TABLE_NAME = "awair_sensor_data";
 
 // Define the connection parameters
 const connectionParams = {
@@ -10,6 +12,7 @@ const connectionParams = {
   password: process.env.POSTGRES_PASSWORD,
   port: 5432, // or the port number you specified when running the Docker container
 };
+
 
 async function tableExists(tableName) {
   const client = new Client(connectionParams);
@@ -31,7 +34,8 @@ async function tableExists(tableName) {
   }
 }
 
-async function setupTable() {
+
+async function setupTable(tableName) {
   // Create a new PostgreSQL client instance
   const client = new Client(connectionParams);
 
@@ -41,22 +45,24 @@ async function setupTable() {
 
     // Define the SQL queries as strings
     const createTableQuery = `
-      CREATE TABLE awair_id_117 (   
-        timestamp TIMESTAMPTZ NOT NULL,   
+      CREATE TABLE ${tableName} (   
+        time TIMESTAMPTZ NOT NULL,
+        deviceid INTEGER NOT NULL,
         temp FLOAT NOT NULL,   
         humid FLOAT NOT NULL,   
         co2 INTEGER NOT NULL,   
         voc INTEGER NOT NULL,   
-        pm25 INTEGER NOT NULL 
+        pm25 INTEGER NOT NULL,
+        CONSTRAINT unique_time_deviceid PRIMARY KEY (time, deviceid)
       );
     `;
 
     const createHypertableQuery = `
-      SELECT create_hypertable('awair_id_117', 'timestamp');
+      SELECT create_hypertable('${tableName}', 'time');
     `;
 
     const addUniqueConstraintQuery = `
-      ALTER TABLE awair_id_117 ADD CONSTRAINT unique_timestamp UNIQUE (timestamp);
+      ALTER TABLE ${tableName} ADD CONSTRAINT unique_time_deviceid UNIQUE (time, deviceid);
     `;
 
     // Run the queries using the client instance
@@ -64,8 +70,8 @@ async function setupTable() {
     console.log("Table created successfully");
     await client.query(createHypertableQuery);
     console.log("Hypertable created successfully");
-    await client.query(addUniqueConstraintQuery);
-    console.log("Unique constraint added successfully");
+    // await client.query(addUniqueConstraintQuery);
+    // console.log("Unique constraint added successfully");
   } catch (err) {
     console.error(err);
   } finally {
@@ -74,21 +80,23 @@ async function setupTable() {
   }
 }
 
-async function save(data, tableName) {
+
+async function save(data, tableName, deviceId) {
+  console.log("Saving latest air data")
   // Create a new PostgreSQL client instance
   const client = new Client(connectionParams);
 
   try {
     // Convert the data into an array of value strings
     const values = data.map((entry) => {
-      const [timestamp, temp, humid, co2, voc, pm25] = entry.split(",");
-      return `('${timestamp}', ${temp}, ${humid}, ${co2}, ${voc}, ${pm25})`;
+      const [time, temp, humid, co2, voc, pm25] = entry.split(",");
+      return `('${time}','${deviceId}', ${temp}, ${humid}, ${co2}, ${voc}, ${pm25})`;
     });
 
     // Build the INSERT statement and execute it
-    const insertQuery = `INSERT INTO ${tableName} (timestamp, temp, humid, co2, voc, pm25)
-                           VALUES ${values.join(",")}
-                           ON CONFLICT (timestamp) DO NOTHING;`;
+    const insertQuery = `INSERT INTO ${tableName} (time, deviceid, temp, humid, co2, voc, pm25)
+                          VALUES ${values.join(",")}
+                          ON CONFLICT (time, deviceid) DO NOTHING;`;
 
     // Connect to the database
     await client.connect();
@@ -103,6 +111,7 @@ async function save(data, tableName) {
   }
 }
 
+
 async function read(numRows, tableName) {
   // Create a new PostgreSQL client instance
   const client = new Client(connectionParams);
@@ -113,7 +122,7 @@ async function read(numRows, tableName) {
     await client.connect();
 
     // Construct the SELECT query with the LIMIT clause
-    const selectQuery = `SELECT * FROM ${tableName} ORDER BY timestamp DESC LIMIT $1;`;
+    const selectQuery = `SELECT * FROM ${tableName} ORDER BY time DESC LIMIT $1;`;
     const values = [numRows];
 
     // Execute the SELECT query with the specified number of rows
@@ -141,26 +150,39 @@ const data = [
   "2023-02-14T12:17:48.000Z,72.19399999999999,55.11,494,788,3",
 ];
 
+
 async function init() {
   // check if table exists, if not, run setupTable()
-  if(!(await tableExists("awair_id_117"))) {
+  if(!(await tableExists(AIRDATA_TABLE_NAME))) {
     console.log("Creating table...")
-    await setupTable();
+    await setupTable(AIRDATA_TABLE_NAME);
   } else {
     console.log("Table exists")
   }
 }
 
+
 async function main() {
-  await save(await getAirData("117"), "awair_id_117");
-  await read(500, "awair_id_117");
+  // save data for all devices
+  for (const deviceId of await getDeviceIdList()) {
+    await save(await getAirData(deviceId), AIRDATA_TABLE_NAME, deviceId);
+  }
+  // await save(await getAirData("117"), AIRDATA_TABLE_NAME);
+  await read(500, AIRDATA_TABLE_NAME);
   // console.log(process.env.POSTGRES_PASSWORD)
 }
+
+
+async function test() {
+  console.log(await getDeviceIdList())
+}
+
 
 // run main function every 5 minutes
 setInterval(main, 240000);
 init();
 main();
+// test()
 
 /*
 NOTES:
@@ -188,4 +210,7 @@ docker run -d --name timescaledb -p 5432:5432 --network grafana-timescaledb-netw
 
 // 
 docker run -d --name=grafana -v grafana-storage:/var/lib/grafana --network grafana-timescaledb-network -p 3000:3000 grafana/grafana
+
+// running psql for debugging
+psql -U postgres
 */
