@@ -11,6 +11,26 @@ const connectionParams = {
   port: 5432, // or the port number you specified when running the Docker container
 };
 
+async function tableExists(tableName) {
+  const client = new Client(connectionParams);
+  try {
+    await client.connect();
+    const res = await client.query(`
+    SELECT EXISTS(
+      SELECT * FROM 
+        _timescaledb_catalog.hypertable 
+      WHERE 
+        table_name = '${tableName}'
+    );`);
+    // console.log(res.rows)
+    return res.rows[0].exists;
+  } catch (err) {
+    console.error(err);
+  } finally {
+    await client.end();
+  }
+}
+
 async function setupTable() {
   // Create a new PostgreSQL client instance
   const client = new Client(connectionParams);
@@ -121,15 +141,25 @@ const data = [
   "2023-02-14T12:17:48.000Z,72.19399999999999,55.11,494,788,3",
 ];
 
+async function init() {
+  // check if table exists, if not, run setupTable()
+  if(!(await tableExists("awair_id_117"))) {
+    console.log("Creating table...")
+    await setupTable();
+  } else {
+    console.log("Table exists")
+  }
+}
+
 async function main() {
-  // await setupTable()
   await save(await getAirData("117"), "awair_id_117");
   await read(500, "awair_id_117");
   // console.log(process.env.POSTGRES_PASSWORD)
 }
 
 // run main function every 5 minutes
-setInterval(main, 300000);
+setInterval(main, 240000);
+init();
 main();
 
 /*
