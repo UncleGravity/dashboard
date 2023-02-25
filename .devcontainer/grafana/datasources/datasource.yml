@@ -15,3 +15,14 @@ datasources:
       connMaxLifetime: 14400 # Grafana v5.4+
       postgresVersion: ${AV_POSTGRES_VERSION}
       timescaledb: true
+  - name: Prometheus
+    type: prometheus
+    url: http://${PROMETHEUS_URL}:${PROMETHEUS_PORT}
+    # access: proxy
+    # jsonData:
+    #   tlsSkipVerify: true
+    #   httpHeaderName1: Authorization
+    #   httpHeaderValue1: Bearer ${PROMETHEUS_TOKEN}
+    #   keepCookies: []
+    version: 1
+    editable: true
