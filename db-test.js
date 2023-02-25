@@ -57,12 +57,14 @@ async function setupTable(tableName) {
       );
     `;
 
+    // Create hypertable (makes querying by time faster)
     const createHypertableQuery = `
       SELECT create_hypertable('${tableName}', 'time');
     `;
 
-    const addUniqueConstraintQuery = `
-      ALTER TABLE ${tableName} ADD CONSTRAINT unique_time_deviceid UNIQUE (time, deviceid);
+    // Create index on deviceid and time (makes searching by deviceid faster)
+    const addIndexQuery = `
+      CREATE INDEX ix_deviceid_time ON awair_sensor_data (deviceid, time DESC);
     `;
 
     // Run the queries using the client instance
@@ -70,8 +72,8 @@ async function setupTable(tableName) {
     console.log("Table created successfully");
     await client.query(createHypertableQuery);
     console.log("Hypertable created successfully");
-    // await client.query(addUniqueConstraintQuery);
-    // console.log("Unique constraint added successfully");
+    await client.query(addIndexQuery);
+    console.log("Index created successfully");
   } catch (err) {
     console.error(err);
   } finally {
@@ -129,8 +131,8 @@ async function read(numRows, tableName) {
     const res = await client.query(selectQuery, values);
 
     // Log the query results to the console
-    console.log("Query results:");
-    console.log(res.rows);
+    console.log("Query results:", res.rows.length);
+    // console.log(res.rows);
   } catch (err) {
     console.error(err);
   } finally {
@@ -167,8 +169,9 @@ async function main() {
   for (const deviceId of await getDeviceIdList()) {
     await save(await getAirData(deviceId), AIRDATA_TABLE_NAME, deviceId);
   }
-  // await save(await getAirData("117"), AIRDATA_TABLE_NAME);
-  await read(500, AIRDATA_TABLE_NAME);
+
+  // read 500 rows from table (for testing)
+  // await read(500, AIRDATA_TABLE_NAME);
   // console.log(process.env.POSTGRES_PASSWORD)
 }
 
