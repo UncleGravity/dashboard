@@ -68,7 +68,6 @@ services:
       - '--path.rootfs=/rootfs'
       - '--path.sysfs=/host/sys'
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
-      - '--collector.systemd --collector.processes'
     ports:
       - 9100:9100
 
@@ -115,7 +114,8 @@ services:
       - 3000:3000
     volumes:
       - grafana-data:/var/lib/grafana
-      - ./grafana:/etc/grafana/provisioning
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      # - ./grafana/data/dashboards:/etc/dashboards
     depends_on:
       - timescaledb
     env_file:
