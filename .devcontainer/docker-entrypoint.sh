@@ -8,8 +8,8 @@ cd /workspaces/dashboard
 npm run clean
 npm install
 
-echo "Waiting 10 seconds for postgres to start!"
-sleep 10
+echo "Waiting 6 seconds for postgres to start!"
+sleep 6
 pm2-docker start db-test.js
 
 # run command passed in via CMD in Dockerfile
