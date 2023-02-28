@@ -2203,13 +2203,13 @@
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "stepBefore",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "auto",
+            "showPoints": "never",
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -2303,7 +2303,7 @@
           "format": "time_series",
           "hide": false,
           "rawQuery": true,
-          "rawSql": "-- SELECT time, container_name, usage_percent FROM docker_container_mem ORDER BY time ASC\n\nSELECT\n  time_bucket('15s', \"time\") as \"time\",\n  container_name,\n  avg(usage_percent) AS mem_usage\nFROM docker_container_mem\nWHERE\n  time >= $__timeFrom() AND time <= $__timeTo()\nGROUP BY\n  time_bucket('15s', \"time\"),\n  container_name\nORDER BY\n  \"time\" ASC\n",
+          "rawSql": "-- SELECT time, container_name, usage_percent FROM docker_container_mem ORDER BY time ASC\n\nSELECT\n  time_bucket('$__interval', \"time\") as \"time\",\n  container_name,\n  avg(usage_percent) AS mem_usage\nFROM docker_container_mem\nWHERE\n  time >= $__timeFrom() AND time <= $__timeTo()\nGROUP BY\n  time_bucket('$__interval', \"time\"),\n  container_name\nORDER BY\n  \"time\" ASC\n",
           "refId": "Percent",
           "sql": {
             "columns": [
@@ -2780,6 +2780,6 @@
   "timezone": "browser",
   "title": "Server and Docker",
   "uid": "LLtQxKb4z",
-  "version": 35,
+  "version": 37,
   "weekStart": ""
 }
