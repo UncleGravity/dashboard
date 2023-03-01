@@ -26,7 +26,7 @@
   "fiscalYearStartMonth": 0,
   "gnetId": 893,
   "graphTooltip": 1,
-  "id": 4,
+  "id": 11,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -233,7 +233,7 @@
           "format": "time_series",
           "hide": false,
           "rawQuery": true,
-          "rawSql": "-- SELECT \"time\", interface, bytes_sent FROM net WHERE interface NOT IN ('all') ORDER BY \"time\" ASC\n-- SELECT \"time\", bytes_sent - LAG(bytes_sent) OVER (ORDER BY \"time\") AS bytes_sent_diff FROM net WHERE interface NOT IN ('all', 'eth0') ORDER BY \"time\" DESC\n-- SELECT time, interface, bytes_sent, bytes_recv from net ORDER BY time DESC\n\nSELECT \"time\", interface, bytes_sent - lag(bytes_sent, 1, 0) OVER (PARTITION BY interface ORDER BY \"time\") AS bytes_tx\nFROM net WHERE interface NOT IN ('all', 'eth0', 'lo')\nORDER BY \"time\" ASC",
+          "rawSql": "-- SELECT \"time\", interface, bytes_sent FROM net WHERE interface NOT IN ('all') ORDER BY \"time\" ASC\n-- SELECT \"time\", bytes_sent - LAG(bytes_sent) OVER (ORDER BY \"time\") AS bytes_sent_diff FROM net WHERE interface NOT IN ('all', 'eth0') ORDER BY \"time\" DESC\n-- SELECT time, interface, bytes_sent, bytes_recv from net ORDER BY time DESC\n\nSELECT \"time\", interface, bytes_sent - lag(bytes_sent, 1, 0) OVER (PARTITION BY interface ORDER BY \"time\") AS bytes_tx\nFROM net WHERE interface NOT IN ('all', 'lo')\nORDER BY \"time\" ASC",
           "refId": "Sent",
           "sql": {
             "columns": [
@@ -286,7 +286,7 @@
           "format": "time_series",
           "hide": false,
           "rawQuery": true,
-          "rawSql": "-- SELECT \"time\", interface, bytes_recv *-1 as bytes_recv FROM net WHERE interface NOT IN ('all') ORDER BY \"time\" DESC \n-- SELECT \"time\", (bytes_recv - LAG(bytes_recv) OVER (ORDER BY \"time\")) * -1  AS bytes_recv_diff FROM net WHERE interface NOT IN ('all') ORDER BY \"time\" DESC\n-- SELECT \"time\", interface, (bytes_recv * -1) as bytes_recv FROM net WHERE interface NOT IN ('all') ORDER BY \"time\" ASC\n\nSELECT \"time\", interface, (bytes_recv - lag(bytes_recv, 1, 0) OVER (PARTITION BY interface ORDER BY \"time\")) * -1 AS bytes_rx\nFROM net WHERE interface NOT IN ('all', 'eth0', 'lo')\nORDER BY \"time\" ASC\n",
+          "rawSql": "-- SELECT \"time\", interface, bytes_recv *-1 as bytes_recv FROM net WHERE interface NOT IN ('all') ORDER BY \"time\" DESC \n-- SELECT \"time\", (bytes_recv - LAG(bytes_recv) OVER (ORDER BY \"time\")) * -1  AS bytes_recv_diff FROM net WHERE interface NOT IN ('all') ORDER BY \"time\" DESC\n-- SELECT \"time\", interface, (bytes_recv * -1) as bytes_recv FROM net WHERE interface NOT IN ('all') ORDER BY \"time\" ASC\n\nSELECT \"time\", interface, (bytes_recv - lag(bytes_recv, 1, 0) OVER (PARTITION BY interface ORDER BY \"time\")) * -1 AS bytes_rx\nFROM net WHERE interface NOT IN ('all', 'lo')\nORDER BY \"time\" ASC\n",
           "refId": "Received",
           "sql": {
             "columns": [
@@ -1365,7 +1365,7 @@
           "table": "system"
         }
       ],
-      "title": "Hypertables",
+      "title": "All Tables",
       "type": "table"
     },
     {
@@ -2203,13 +2203,13 @@
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "stepBefore",
+            "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "auto",
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -2303,7 +2303,7 @@
           "format": "time_series",
           "hide": false,
           "rawQuery": true,
-          "rawSql": "-- SELECT time, container_name, usage_percent FROM docker_container_mem ORDER BY time ASC\n\nSELECT\n  time_bucket('$__interval', \"time\") as \"time\",\n  container_name,\n  avg(usage_percent) AS mem_usage\nFROM docker_container_mem\nWHERE\n  time >= $__timeFrom() AND time <= $__timeTo()\nGROUP BY\n  time_bucket('$__interval', \"time\"),\n  container_name\nORDER BY\n  \"time\" ASC\n",
+          "rawSql": "-- SELECT time, container_name, usage_percent FROM docker_container_mem ORDER BY time ASC\n\nSELECT\n  time_bucket('15s', \"time\") as \"time\",\n  container_name,\n  avg(usage_percent) AS mem_usage\nFROM docker_container_mem\nWHERE\n  time >= $__timeFrom() AND time <= $__timeTo()\nGROUP BY\n  time_bucket('15s', \"time\"),\n  container_name\nORDER BY\n  \"time\" ASC\n",
           "refId": "Percent",
           "sql": {
             "columns": [
@@ -2749,7 +2749,7 @@
     "list": []
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-12h",
     "to": "now"
   },
   "timepicker": {
@@ -2780,6 +2780,6 @@
   "timezone": "browser",
   "title": "Server and Docker",
   "uid": "LLtQxKb4z",
-  "version": 37,
+  "version": 1,
   "weekStart": ""
 }
