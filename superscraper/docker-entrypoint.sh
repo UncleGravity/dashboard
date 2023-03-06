@@ -4,7 +4,7 @@
 # https://code.visualstudio.com/remote/advancedcontainers/start-processes
 
 echo "Running npm install in /workspaces/dashboard"
-cd /workspaces/dashboard
+cd /workspaces/superscraper
 npm run clean
 npm install
 

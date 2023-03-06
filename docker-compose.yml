@@ -4,6 +4,20 @@ name: dashboard
 
 services:
 
+  # TIMESCALE DB ##################################################
+  timescaledb:
+    container_name: timescaledb
+    build: 
+      context: ./timescaledb
+      dockerfile: timescaledb.Dockerfile
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    volumes:
+      - timescaledb-data:/var/lib/postgresql/data
+    env_file:
+      - .env
+
   # TELEGRAF ##################################################
   telegraf:
     container_name: telegraf
@@ -27,27 +41,15 @@ services:
     env_file:
       - .env
 
-  # TIMESCALE DB ##################################################
-  timescaledb:
-    container_name: timescaledb
-    image: timescale/timescaledb:latest-pg14
-    restart: unless-stopped
-    ports:
-      - 5432:5432
-    volumes:
-      - timescaledb-data:/var/lib/postgresql/data
-    env_file:
-      - .env
-
   # SUPERSCRAPER ##################################################
   superscraper:
     container_name: superscraper
     build: 
-      context: .
-      dockerfile: Dockerfile
+      context: ./superscraper
+      dockerfile: superscraper.Dockerfile
 
     volumes:
-      - ../:/workspaces/dashboard
+      - ./superscraper:/workspaces/superscraper
       
     # Overrides default command so things don't shut down after the process ends.
     # command: sleep infinity
@@ -65,7 +67,7 @@ services:
   # GRAFANA ##################################################
   grafana:
     container_name: grafana
-    image: grafana/grafana
+    image: grafana/grafana:latest
     ports:
       - 3000:3000
     volumes:
@@ -74,6 +76,7 @@ services:
       # - ./grafana/data/dashboards:/etc/dashboards
     depends_on:
       - timescaledb
+      - telegraf
     env_file:
       - .env
 

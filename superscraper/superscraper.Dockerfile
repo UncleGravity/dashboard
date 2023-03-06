@@ -14,5 +14,5 @@ FROM mcr.microsoft.com/devcontainers/javascript-node:0-18
 RUN npm install -g pm2
 # WORKDIR /workspaces/dashboard/.devcontainer/
 USER node
-ENTRYPOINT [ "/workspaces/dashboard/.devcontainer/docker-entrypoint.sh" ]
+ENTRYPOINT [ "/workspaces/superscraper/docker-entrypoint.sh" ]
 CMD [ "sleep", "infinity" ]
