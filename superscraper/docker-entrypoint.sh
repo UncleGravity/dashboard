@@ -9,8 +9,8 @@ npm run clean
 npm install
 
 echo "Waiting 6 seconds for postgres to start!"
-sleep 6
-pm2-docker start db-test.js
+# sleep 6
+# pm2-docker start awair-scraper.js healthkit-scraper.js
 
 # run command passed in via CMD in Dockerfile
 exec "$@"

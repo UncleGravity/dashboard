@@ -1,23 +1,21 @@
-const { Client } = require("pg");
+const { Pool } = require("pg");
 const { getAirData, getDevices, getDeviceIdList } = require("./awair-api.js");
 
 const AIRDATA_TABLE_NAME = "awair_sensor_data";
 
-// Define the connection parameters
-// read from local .env file
-const connectionParams = {
+const pool = new Pool({
+  // Define the connection parameters
+  // read from local .env file
   user: process.env.POSTGRES_USER,
   host: process.env.POSTGRES_URL,
   database: process.env.POSTGRES_DB,
   password: process.env.POSTGRES_PASSWORD,
-  port: process.env.POSTGRES_PORT, // or the port number you specified when running the Docker container
-};
-
+  port: process.env.POSTGRES_PORT
+});
 
 async function tableExists(tableName) {
-  const client = new Client(connectionParams);
   try {
-    await client.connect();
+    const client = await pool.connect();
     const res = await client.query(`
     SELECT EXISTS(
       SELECT * FROM 
@@ -25,23 +23,21 @@ async function tableExists(tableName) {
       WHERE 
         table_name = '${tableName}'
     );`);
-    // console.log(res.rows)
+
+    await client.release();
+
     return res.rows[0].exists;
   } catch (err) {
     console.error(err);
-  } finally {
-    await client.end();
   }
 }
 
 
 async function setupTable(tableName) {
-  // Create a new PostgreSQL client instance
-  const client = new Client(connectionParams);
 
   try {
     // Connect to the database
-    await client.connect();
+    const client = await pool.connect();
 
     // Define the SQL queries as strings
     const createTableQuery = `
@@ -74,19 +70,15 @@ async function setupTable(tableName) {
     console.log("Hypertable created successfully");
     await client.query(addIndexQuery);
     console.log("Index created successfully");
+    await client.release();
   } catch (err) {
     console.error(err);
-  } finally {
-    // Close the client connection
-    await client.end();
   }
 }
 
 
 async function save(data, tableName, deviceId) {
   console.log("Saving latest air data")
-  // Create a new PostgreSQL client instance
-  const client = new Client(connectionParams);
 
   try {
     // Convert the data into an array of value strings
@@ -101,27 +93,23 @@ async function save(data, tableName, deviceId) {
                           ON CONFLICT (time, deviceid) DO NOTHING;`;
 
     // Connect to the database
-    await client.connect();
+    const client = await pool.connect();
     await client.query(insertQuery);
 
+    await client.release();
     console.log("Data inserted successfully");
   } catch (err) {
     console.error(err);
-  } finally {
-    // Close the client connection
-    await client.end();
-  }
+  } 
 }
 
 
 async function read(numRows, tableName) {
-  // Create a new PostgreSQL client instance
-  const client = new Client(connectionParams);
 
   try {
 
     // Connect to the database
-    await client.connect();
+    const client = await pool.connect();
 
     // Construct the SELECT query with the LIMIT clause
     const selectQuery = `SELECT * FROM ${tableName} ORDER BY time DESC LIMIT $1;`;
@@ -132,12 +120,9 @@ async function read(numRows, tableName) {
 
     // Log the query results to the console
     console.log("Query results:", res.rows.length);
-    // console.log(res.rows);
+    await client.release();
   } catch (err) {
     console.error(err);
-  } finally {
-    // Close the client connection
-    await client.end();
   }
 }
 
