@@ -1,19 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { Pool } = require('pg');
-
-
-// const fs = require('fs');
-
-// fs.readFile('./data.json', (err, data) => {
-//   if (err) {
-//     console.error(err);
-//     return;
-//   }
-//   const jsonData = JSON.parse(data);
-//   console.log(jsonData);
-// });
-
+const fs = require('fs');
 
 const app = express();
 app.use(bodyParser.json({ limit: '10mb' }));
@@ -39,7 +27,10 @@ app.post('/healthkitapi', async (req, res) => {
   }
 });
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
+  console.log("Hello World!")
+  // Loop here with all files ending with .json in exports folder
+  getFile();
   res.send('Hello World!');
 });
 
@@ -48,6 +39,16 @@ app.listen(process.env.SUPERSCRAPER_PORT, () => {
   console.log('Server listening on port 4562.');
   createSchemaAndTables();
 });
+
+function getFile() {
+  fs.readFile('./exports/HealthAutoExport-2020-01-01-2020-12-31.json', (err, data) => {
+    if (err) { console.error(err); return; }
+    
+    const jsonData = JSON.parse(data);
+    // console.log(jsonData.data.metrics);
+    processMetrics(jsonData.data.metrics);
+  });
+}
 
 async function createSchemaAndTables() {
   const createSchemaQuery = `CREATE SCHEMA IF NOT EXISTS ${SCHEMA}`;
