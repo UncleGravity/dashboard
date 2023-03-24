@@ -11,7 +11,7 @@ psql -U $POSTGRES_USER -d $POSTGRES_DB -c 'CREATE SCHEMA telegraf;'
 # psql -U $POSTGRES_USER -d $POSTGRES_DB -c 'CREATE SCHEMA awair;'
 
 # Set search path for new user
-psql -U $POSTGRES_USER -d $POSTGRES_DB -c "ALTER USER $POSTGRES_USER SET search_path = telegraf,public;"
+psql -U $POSTGRES_USER -d $POSTGRES_DB -c "ALTER USER $POSTGRES_USER SET search_path = healthkit,telegraf,public;"
 
 # [DEBUG] Create a new table in the "telegraf" schema
 # [DEBUG] Initialize the "test_table" with some data
