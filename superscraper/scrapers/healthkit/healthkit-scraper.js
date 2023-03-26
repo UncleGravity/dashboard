@@ -1,159 +1,241 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const { Pool } = require('pg');
-// const fs = require('fs');
-const fs = require('fs/promises'); // Import the fs/promises module
+const fs = require('fs/promises');
 const path = require('path');
+const { saveData } = require('../_utils/db.js');
 
 const app = express();
-app.use(bodyParser.json({ limit: '10mb' }));
+app.use(express.json({ limit: '10mb' }));
+const serverPort = process.env.SUPERSCRAPER_PORT || 4562;
+
 const SCHEMA = 'healthkit';
 
-const pool = new Pool({
-  user: process.env.POSTGRES_USER,
-  host: process.env.POSTGRES_URL,
-  database: process.env.POSTGRES_DB,
-  password: process.env.POSTGRES_PASSWORD,
-  port: process.env.POSTGRES_PORT
+app.post('/test', async (req, res) => {
+    handleTestEndpoint(req, res);
 });
 
-
 app.post('/healthkitapi', async (req, res) => {
-  try {
-    const data = req.body.data;
-    await processMetrics(data.metrics);
-    res.status(200).send('Nice');
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('An error occurred.');
-  }
+    handleHealthkitApiEndpoint(req, res);
+});
+
+app.post('/hkapi', async (req, res) => {
+    handleHkApiEndpoint(req, res);
 });
 
 app.get('/', async (req, res) => {
-  console.log("Hello World!");
-  res.send('Hello World!');
+    handleRootEndpoint(req, res);
 });
 
 app.get('/importall', async (req, res) => {
-  try {
-    console.log("Importing all files...");
-    const exportsFolderPath = './exports';
-    const files = await fs.readdir(exportsFolderPath); // Use readdir method from fs/promises
-    const jsonFiles = files.filter(file => path.extname(file) === '.json');
-
-    // if (jsonFiles.length > 0) {
-    //   const firstFile = jsonFiles[0];
-    //   const data = await fs.readFile(path.join(exportsFolderPath, firstFile)); // Use readFile method from fs/promises
-    //   const jsonData = JSON.parse(data);
-    //   console.log("Processing metrics from " + firstFile);
-    //   await processMetrics(jsonData.data.metrics);
-    // }
-    
-    for (const file of jsonFiles) {
-      const data = await fs.readFile(path.join(exportsFolderPath, file)); // Use readFile method from fs/promises
-      const jsonData = JSON.parse(data);
-      console.log("Processing metrics from " + file);
-      await processMetrics(jsonData.data.metrics);
-    }
-    
-    res.send('Import done!');
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('An error occurred.');
-  }
+    handleImportAllEndpoint(req, res);
 });
 
 // Start server
-const serverPort = process.env.SUPERSCRAPER_PORT || 4562;
 app.listen(serverPort, () => {
-  console.log('Server listening on port ' + serverPort + '...');
-  createSchema();
+    console.log('Server listening on port ' + serverPort + '...');
 });
 
-async function createSchema() {
-  const createSchemaQuery = `CREATE SCHEMA IF NOT EXISTS ${SCHEMA}`;
-  await pool.query(createSchemaQuery);
-}
+//--- Endpoints handling functions
 
-async function processMetrics(metrics) {
-  // console.log(metrics);
-  for (let metric of metrics) {
-    let name = metric.name;
-    let units = metric.units;
-    let data = metric.data;
-
-    switch (name) {
-      case 'sexual_activity':
-      case 'handwashing':
-      case 'toothbrushing':
-      case 'high_heart_rate_notifications':
-        // Do nothing
-        break;
-      case 'blood_glucose':
-        await createAndInsertData(name, data, ['date', 'qty', 'mealTime']);
-        break;
-      case 'blood_pressure':
-        await createAndInsertData(name, data, ['date', 'systolic', 'diastolic']);
-        break;
-      case 'heart_rate':
-        await createAndInsertData(name, data, ['date', 'min', 'avg', 'max']);
-        break;
-      case 'sleep_analysis':
-        await createAndInsertData(name, data, ['date', 'asleep', 'sleepStart', 'sleepEnd', 'sleepSource', 'inBed', 'inBedStart', 'inBedEnd', 'inBedSource']);
-        break;
-      default:
-        await createAndInsertData(name, data, ['date', 'qty', 'source']);
+async function handleTestEndpoint(req, res) {
+    // Print quantityType for all entries in the request body
+    const data = req.body;
+    for (let metric of data) {
+        if (metric.categoryType != undefined) {
+            console.log(metric);
+            // print "+" without new line
+            // process.stdout.write('+');
+        }
+        else {
+            // process.stdout.write('-');
+        }
+        // console.log(metric);
     }
-  }
-  console.log('Done processing metrics.');
+    res.status(200).send('nice');
 }
 
-async function createAndInsertData(name, data, columns) {
-
-  if (data.length === 0) {
-    console.log(`No data for ${name}, skipping table creation and insertion.`);
-    return;
-  }
-
-  // Add data types for each column
-  const columnDataTypes = {
-    date: 'TIMESTAMP WITH TIME ZONE',
-    qty: 'DOUBLE PRECISION',
-    source: 'TEXT',
-    systolic: 'DOUBLE PRECISION',
-    diastolic: 'DOUBLE PRECISION',
-    min: 'DOUBLE PRECISION',
-    avg: 'DOUBLE PRECISION',
-    max: 'DOUBLE PRECISION',
-    mealTime: 'TEXT',
-    asleep: 'DOUBLE PRECISION',
-    sleepStart: 'TIMESTAMP WITH TIME ZONE',
-    sleepEnd: 'TIMESTAMP WITH TIME ZONE',
-    sleepSource: 'TEXT',
-    inBed: 'DOUBLE PRECISION',
-    inBedStart: 'TIMESTAMP WITH TIME ZONE',
-    inBedEnd: 'TIMESTAMP WITH TIME ZONE',
-    inBedSource: 'TEXT',
-  };
-
-  // Generate the CREATE TABLE query
-  const columnDefinitions = columns.map(col => `${col} ${columnDataTypes[col]}`).join(', ');
-  let createTableQuery = `CREATE TABLE IF NOT EXISTS ${SCHEMA}.${name} (${columnDefinitions})`;
-  await pool.query(createTableQuery);
-  console.log(createTableQuery);
-
-  for (let row of data) {
-    // Replace undefined or empty string values with null
-    let values = columns.map(col => (row[col] !== undefined && row[col] !== '') ? row[col] : null);
-
-    // Generate the INSERT query
-    let placeholders = values.map((_, i) => '$' + (i + 1)).join(', '); 
-    let insertQuery = `INSERT INTO ${SCHEMA}.${name} (${columns.join(', ')}) VALUES (${placeholders})`;
-    // console.log(insertQuery);
-
-    // Execute the INSERT query
-    await pool.query({ text: insertQuery, values: values });
-  }
-
-  console.log(`Inserted ${data.length} rows into ${name}.`);
+async function handleHkApiEndpoint(req, res) {
+    try {
+        const data = req.body;
+        await processMetrics(data);
+        res.status(200).send('Nice');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('An error occurred.');
+    }
+ }
+async function handleRootEndpoint(req, res) {
+    res.status(200).send('Hello from the HealthKit scraper!');
 }
+
+//--- Other necessary functions
+async function processMetrics(metrics) {
+    for (let metric of metrics) {
+        let rawName = metric.quantityType || metric.categoryType || '';
+        let name = (metric.quantityType || metric.categoryType || '').replace(/HK(?:Quantity|Category)TypeIdentifier/, '').toLowerCase(); // Remove HKQuantityTypeIdentifier or HKCategoryTypeIdentifier
+        let units = metric.unit;
+        let date = metric.startDate;
+        let endDate = metric.endDate;
+        let timezone = metric.metadata.HKTimeZone;
+        let qty = metric.quantity;
+        let source = metric.sourceRevision.source.name;
+
+        // Create a new object with the relevant data
+        // Index is the column name
+        let healthKitData =
+            {
+                time:       { value: date,      type: 'TIMESTAMP WITH TIME ZONE' },
+                endDate:    { value: endDate,   type: 'TIMESTAMP WITH TIME ZONE' },
+                /* timezone:   { value: timezone,  type: 'TEXT' }, */
+                value:     { value: qty,       type: 'DOUBLE PRECISION' },
+                units:      { value: units,     type: 'TEXT' },
+                source:     { value: source,    type: 'TEXT' }
+            };
+
+        // Handle different types of data based on the quantityType or categoryType
+        switch (rawName) {
+            // case 'HKQuantityTypeIdentifierSexualActivity':
+            // case 'HKQuantityTypeIdentifierHandwashingEvent':
+            // case 'HKQuantityTypeIdentifierToothbrushingEvent':
+            // case 'HKQuantityTypeIdentifierHighHeartRateEvent':
+            //     // Do nothing
+            // case 'HKQuantityTypeIdentifierBloodGlucose':
+            // case 'HKQuantityTypeIdentifierBloodPressureSystolic':
+            // case 'HKQuantityTypeIdentifierBloodPressureDiastolic':
+            // case 'HKQuantityTypeIdentifierHeartRate':
+            case 'HKCategoryTypeIdentifierSleepAnalysis':
+
+                let sleepData =
+                {
+                    time:       { value: date,      type: 'TIMESTAMP WITH TIME ZONE' },
+                    endDate:    { value: endDate,   type: 'TIMESTAMP WITH TIME ZONE' },
+                    /* timezone:   { value: timezone,  type: 'TEXT' }, */
+                    value:     { value: metric.value,       type: 'DOUBLE PRECISION' },
+                    /* units:      { value: units,     type: 'TEXT' }, */
+                    source:     { value: source,    type: 'TEXT' }
+                };
+                await saveData(SCHEMA, name, sleepData);
+                break;
+            default:
+                await saveData(SCHEMA, name, healthKitData);
+        }
+    }
+    console.log('Done processing metrics.');
+}
+async function processMetricsHKAE(metrics) {
+    // console.log(metrics);
+    for (let metric of metrics) {
+        let name = metric.name;
+        let units = metric.units;
+        let data = metric.data;
+
+        switch (name) {
+            case 'sexual_activity':
+            case 'handwashing':
+            case 'toothbrushing':
+            case 'high_heart_rate_notifications':
+                // Do nothing
+                break;
+            case 'blood_glucose':
+                await saveData(name, data, ['date', 'qty', 'mealTime']);
+                break;
+            case 'blood_pressure':
+                await saveData(name, data, ['date', 'systolic', 'diastolic']);
+                break;
+            case 'heart_rate':
+                await saveData(name, data, ['date', 'min', 'avg', 'max']);
+                break;
+            case 'sleep_analysis':
+                await saveData(name, data, ['date', 'asleep', 'sleepStart', 'sleepEnd', 'sleepSource', 'inBed', 'inBedStart', 'inBedEnd', 'inBedSource']);
+                break;
+            default:
+                await saveData(name, data, ['date', 'qty', 'source']);
+        }
+    }
+    console.log('Done processing metrics.');
+}
+
+// async function createSchema(schema) {
+//     const createSchemaQuery = `CREATE SCHEMA IF NOT EXISTS ${schema}`;
+//     await pool.query(createSchemaQuery);
+// }
+
+// async function doesTableExist(schema, tableName) {
+//     // Check if the table exists
+//     const checkTableExistsQuery = `
+//         SELECT EXISTS(
+//             SELECT * FROM 
+//             _timescaledb_catalog.hypertable 
+//             WHERE 
+//             table_name = '${tableName}'
+//             AND
+//             schema_name = '${schema}'
+//         );
+//       `;
+
+//     const { rows } = await pool.query(checkTableExistsQuery);
+//     const tableExists = rows[0].exists;
+//     return tableExists;
+// }
+
+// async function createTable(schema, tableName, columns) {
+
+//     // Generate the CREATE TABLE query
+//     const columnDefinitions = columns.map(col => `${col.name} ${col.type}`).join(', ');
+
+//     let createTableQuery = `CREATE TABLE IF NOT EXISTS ${schema}.${tableName} (
+//                             ${columnDefinitions}, 
+//                             UNIQUE (time, source) 
+//                             );`;
+
+//     // Create Table
+//     await pool.query(createTableQuery);
+//     console.log(createTableQuery);
+
+//     // Convert table to hypertable
+//     await pool.query(`SELECT create_hypertable('${SCHEMA}.${tableName}', 'time');`);
+// }
+
+
+// async function saveData(schema, name, data) {
+//     // if (Object.keys(data).length === 0) {
+//     //     console.log(`No data for ${name}, skipping table creation and insertion.`);
+//     //     return;
+//     // }
+
+//     console.log(`Creating schema ${schema}`);
+//     createSchema(schema);
+
+//     // Check if the table exists
+//     console.log(`Checking if table ${schema}.${name} exists`);
+//     const tableExists = await doesTableExist(schema, name);
+//     if (!tableExists) {
+//         const columns = Object.entries(data).map(([key, value]) => ({ name: key, type: value.type }));
+//         console.log(`Table ${schema}.${name} does not exist, creating it.`);
+//         await createTable(schema, name, columns);
+//     }
+
+//     // Insert data
+//     const rowData = Object.entries(data).map(([key, value]) => value.value);
+//     console.log(rowData);
+
+//     // Replace undefined or empty string values with null
+//     const values = rowData.map(value => (value !== undefined && value !== '') ? value : null);
+//     console.log(values);
+
+//     // Generate the INSERT query
+//     const columnNames = Object.keys(data); // eg: ['time', 'duration', 'qty', 'units', 'source']
+//     console.log(columnNames)
+//     const placeholders = columnNames.map((_, i) => '$' + (i + 1)).join(', '); // eg: $1, $2, $3, etc.
+//     console.log(placeholders)
+//     const insertQuery = `INSERT INTO ${schema}.${name} (${columnNames.join(', ')}) 
+//                          VALUES (${placeholders})
+//                          ON CONFLICT (time, source) DO NOTHING;
+//                          `;
+//     console.log(insertQuery);
+
+//     // Execute the INSERT query
+//     await pool.query({ text: insertQuery, values: values });
+
+//     console.log(`Inserted 1 row into ${name}.`);
+// }
+
