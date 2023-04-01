@@ -8,6 +8,7 @@ echo "TIMESCALE ENTRYPOINT, user: $POSTGRES_USER, database: $POSTGRES_DB"
 
 # Create new schemas
 psql -U $POSTGRES_USER -d $POSTGRES_DB -c 'CREATE SCHEMA telegraf;'
+psql -U $POSTGRES_USER -d $POSTGRES_DB -c 'CREATE SCHEMA healthkit;'
 # psql -U $POSTGRES_USER -d $POSTGRES_DB -c 'CREATE SCHEMA awair;'
 
 # Set search path for new user

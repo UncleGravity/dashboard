@@ -8,9 +8,9 @@ cd /workspaces/superscraper
 npm run clean
 npm install
 
-# echo "Waiting 6 seconds for postgres to start!"
-# sleep 6
-# pm2-docker start awair/awair-scraper.js
+# echo "Waiting 5 seconds for postgres to start!"
+sleep 5
+# pm2-docker start ecosystem.config.js
 
 # run command passed in via CMD in Dockerfile
 exec "$@"
