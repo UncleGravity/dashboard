@@ -1,8 +1,9 @@
 const { getAirData, getDevices, getDeviceIdList } = require("./awair-api.js");
 const db = require("../_utils/db.js");
 
-const AIRDATA_TABLE_NAME = "awair_sensor_data";
 const AIRDATA_SCHEMA_NAME = "awair";
+const AIRDATA_TABLE_NAME = "awair_sensor_data";
+const UNIQUE_COLUMNS = ['time','location'];
 
 async function main() {
 
@@ -21,7 +22,7 @@ async function main() {
         { name: "pm25",     value: pm25,     type: 'INTEGER' }
       ];
     });
-    // await db.saveData(AIRDATA_SCHEMA_NAME, AIRDATA_TABLE_NAME, formattedData, ['time', 'deviceid']);
+    await db.saveData(AIRDATA_SCHEMA_NAME, AIRDATA_TABLE_NAME, formattedData, UNIQUE_COLUMNS);
   }
 
   // read 100 rows from table (for testing)

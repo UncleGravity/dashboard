@@ -2,10 +2,10 @@ const express = require('express');
 const fs = require('fs/promises');
 const path = require('path');
 import * as db from "../_utils/db.js"
-
 const app = express();
+
 app.use(express.json({ limit: '10mb' }));
-const serverPort = process.env.SUPERSCRAPER_PORT || 4562;
+const serverPort = process.env.SCRAPER_HEALTHKIT_PORT;
 
 const SCHEMA = 'healthkit';
 

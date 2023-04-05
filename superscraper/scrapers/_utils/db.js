@@ -42,6 +42,11 @@ async function doesTableExist(schema, tableName) {
 }
 
 async function createTable(schema, tableName, columns, uniqueColumns) {
+    // Check columns include "time"
+    if (!columns.find(col => col.name === 'time')) {
+        throw new Error('Columns must include a "time" column');
+    }
+
     if (!columns || columns.length === 0) {
         console.error('No columns provided to create table');
         return;
@@ -58,8 +63,8 @@ async function createTable(schema, tableName, columns, uniqueColumns) {
     const uniqueColumnsString = uniqueColumns.map(col => `${col}`).join(', ');
     const columnDefinitions = columns.map(col => `${col.name} ${col.type}`).join(', ');
     let createTableQuery = `CREATE TABLE IF NOT EXISTS ${schema}.${tableName} (
-                            ${uniqueColumnsString}, 
-                            UNIQUE (${uniqueColumns}) 
+                            ${columnDefinitions},
+                            UNIQUE (${uniqueColumnsString}) 
                             );`;
 
     try {
@@ -68,7 +73,7 @@ async function createTable(schema, tableName, columns, uniqueColumns) {
         console.log(createTableQuery);
 
         // Convert table to hypertable
-        await pool.query(`SELECT create_hypertable('${schema}.${tableName}', 'time');`);
+        await pool.query(`SELECT create_hypertable('${schema}.${tableName}','time');`);
     } catch (error) {
         console.error(`Error occurred while creating table ${schema}.${tableName}`, error);
         throw error;
@@ -103,8 +108,8 @@ async function saveData(schema, tableName, data, uniqueColumns) {
     }
 
     // // Create Schema
-    // console.log(`Creating schema ${schema}`);
-    // await createSchema(schema);
+    console.log(`Creating schema ${schema}`);
+    await createSchema(schema);
 
     // Create table if it doesn't exist
     await createTable(schema, tableName, data[0], uniqueColumns);
