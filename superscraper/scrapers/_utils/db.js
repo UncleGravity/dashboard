@@ -70,7 +70,7 @@ async function createTable(schema, tableName, columns, uniqueColumns) {
     try {
         // Create Table
         await pool.query(createTableQuery);
-        console.log(createTableQuery);
+        // console.log(createTableQuery);
 
         // Convert table to hypertable
         await pool.query(`SELECT create_hypertable('${schema}.${tableName}','time');`);
