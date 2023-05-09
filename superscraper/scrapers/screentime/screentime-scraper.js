@@ -33,7 +33,7 @@ async function handleRootEndpoint(req, res) {
 }
 
 async function handleScreenTimeEndpoint(req, res) {
-    console.log(JSON.stringify(req.body, null, 2));
+    // console.log(JSON.stringify(req.body, null, 2));
 
     /* Expected request body:
     combined_data = {
@@ -122,6 +122,11 @@ async function saveScreenTimeWebData(screenTimeWebData) {
             {
                 name: 'app_name',
                 value: entry.app_name,
+                type: 'TEXT',
+            },
+            {
+                name: 'url',
+                value: entry.url,
                 type: 'TEXT',
             },
             {
