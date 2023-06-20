@@ -1,0 +1,1672 @@
+{
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "grafana",
+            "uid": "-- Grafana --"
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "target": {
+            "limit": 100,
+            "matchAny": false,
+            "tags": [],
+            "type": "dashboard"
+          },
+          "type": "dashboard"
+        }
+      ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 2,
+    "id": 1,
+    "links": [],
+    "liveNow": false,
+    "panels": [
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "id": 33,
+        "panels": [],
+        "title": "DB Health",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P40AE60E18F02DE32"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 2,
+          "x": 0,
+          "y": 1
+        },
+        "id": 31,
+        "options": {
+          "colorMode": "none",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "/^postgres$/",
+            "values": false
+          },
+          "textMode": "value"
+        },
+        "pluginVersion": "9.3.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "postgres",
+              "uid": "P40AE60E18F02DE32"
+            },
+            "editorMode": "code",
+            "format": "table",
+            "rawQuery": true,
+            "rawSql": "SELECT\n  substring(version() from 'PostgreSQL ([0-9]+\\.[0-9]+)') AS postgres,\n  extversion AS timescaledb\nFROM pg_extension\nWHERE extname = 'timescaledb';\n",
+            "refId": "A",
+            "sql": {
+              "columns": [
+                {
+                  "parameters": [
+                    {
+                      "name": "co2",
+                      "type": "functionParameter"
+                    }
+                  ],
+                  "type": "function"
+                }
+              ],
+              "groupBy": [
+                {
+                  "property": {
+                    "type": "string"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "limit": 50
+            },
+            "table": "awair_sensor_data"
+          }
+        ],
+        "title": "PG Version",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P40AE60E18F02DE32"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 2,
+          "x": 2,
+          "y": 1
+        },
+        "id": 30,
+        "options": {
+          "colorMode": "none",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "/^timescaledb$/",
+            "values": false
+          },
+          "textMode": "value"
+        },
+        "pluginVersion": "9.3.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "postgres",
+              "uid": "P40AE60E18F02DE32"
+            },
+            "editorMode": "code",
+            "format": "table",
+            "rawQuery": true,
+            "rawSql": "SELECT\n  substring(version() from 'PostgreSQL ([0-9]+\\.[0-9]+)') AS postgres,\n  extversion AS timescaledb\nFROM pg_extension\nWHERE extname = 'timescaledb';\n",
+            "refId": "A",
+            "sql": {
+              "columns": [
+                {
+                  "parameters": [
+                    {
+                      "name": "co2",
+                      "type": "functionParameter"
+                    }
+                  ],
+                  "type": "function"
+                }
+              ],
+              "groupBy": [
+                {
+                  "property": {
+                    "type": "string"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "limit": 50
+            },
+            "table": "awair_sensor_data"
+          }
+        ],
+        "title": "TSDB Version",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P40AE60E18F02DE32"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "#EAB839",
+                  "value": 500000000
+                },
+                {
+                  "color": "red",
+                  "value": 1000000000
+                }
+              ]
+            },
+            "unit": "decbytes"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 2,
+          "x": 4,
+          "y": 1
+        },
+        "id": 29,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "value"
+        },
+        "pluginVersion": "9.3.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "postgres",
+              "uid": "P40AE60E18F02DE32"
+            },
+            "editorMode": "code",
+            "format": "table",
+            "rawQuery": true,
+            "rawSql": "SELECT pg_database_size('postgres')\n-- SELECT pg_size_pretty(pg_database_size('postgres'))",
+            "refId": "A",
+            "sql": {
+              "columns": [
+                {
+                  "parameters": [
+                    {
+                      "name": "co2",
+                      "type": "functionParameter"
+                    }
+                  ],
+                  "type": "function"
+                }
+              ],
+              "groupBy": [
+                {
+                  "property": {
+                    "type": "string"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "limit": 50
+            },
+            "table": "awair_sensor_data"
+          }
+        ],
+        "title": "DB Size",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P40AE60E18F02DE32"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {
+              "align": "auto",
+              "displayMode": "auto",
+              "inspect": false
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "size_in_mb"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "decbytes"
+                },
+                {
+                  "id": "custom.width",
+                  "value": 95
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "row_count"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 94
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "compression_enabled"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 156
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "compressed"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 100
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "chunks"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 112
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "rows"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 65
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 8,
+          "x": 0,
+          "y": 3
+        },
+        "id": 19,
+        "options": {
+          "footer": {
+            "fields": "",
+            "reducer": [
+              "sum"
+            ],
+            "show": false
+          },
+          "showHeader": true,
+          "sortBy": []
+        },
+        "pluginVersion": "9.3.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "postgres",
+              "uid": "P40AE60E18F02DE32"
+            },
+            "editorMode": "code",
+            "format": "table",
+            "rawQuery": true,
+            "rawSql": "SELECT hypertable_name, hypertable_size(format('%I.%I', hypertable_schema, hypertable_name)::regclass) as size_in_mb, approximate_row_count(hypertable_schema || '.' || hypertable_name) as rows, compression_enabled as compressed, num_chunks as chunks\nFROM timescaledb_information.hypertables;",
+            "refId": "A",
+            "sql": {
+              "columns": [
+                {
+                  "parameters": [
+                    {
+                      "name": "\"time\"",
+                      "type": "functionParameter"
+                    }
+                  ],
+                  "type": "function"
+                }
+              ],
+              "groupBy": [
+                {
+                  "property": {
+                    "type": "string"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "limit": 50
+            },
+            "table": "awair_sensor_data"
+          }
+        ],
+        "title": "TimescaleDB",
+        "type": "table"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 9
+        },
+        "id": 22,
+        "panels": [],
+        "title": "Air Data",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P40AE60E18F02DE32"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "axisSoftMax": 76,
+              "axisSoftMin": 67,
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "dashed+area"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "blue",
+                  "value": null
+                },
+                {
+                  "color": "green",
+                  "value": 68
+                },
+                {
+                  "color": "red",
+                  "value": 75
+                }
+              ]
+            },
+            "unit": "fahrenheit"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Living Room"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Living Room"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Bed Room"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Bed Room"
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 8,
+          "x": 0,
+          "y": 10
+        },
+        "id": 16,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "postgres",
+              "uid": "P40AE60E18F02DE32"
+            },
+            "editorMode": "code",
+            "format": "time_series",
+            "hide": false,
+            "rawQuery": true,
+            "rawSql": "SELECT time_bucket((interval '$__interval') * $interval_multiplier, \"time\") AS time,\n       avg(temp) AS avg_temp\nFROM awair_sensor_data\nWHERE deviceid = '117' AND \"time\" >= $__timeFrom() AND \"time\" <= $__timeTo()\nGROUP BY 1\nORDER BY 1",
+            "refId": "Living Room",
+            "sql": {
+              "columns": [
+                {
+                  "parameters": [
+                    {
+                      "name": "\"time\"",
+                      "type": "functionParameter"
+                    }
+                  ],
+                  "type": "function"
+                },
+                {
+                  "parameters": [
+                    {
+                      "name": "temp",
+                      "type": "functionParameter"
+                    }
+                  ],
+                  "type": "function"
+                }
+              ],
+              "groupBy": [
+                {
+                  "property": {
+                    "name": "deviceid",
+                    "type": "string"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "limit": 50,
+              "whereJsonTree": {
+                "children1": [
+                  {
+                    "id": "989a9bab-cdef-4012-b456-71866969c7ef",
+                    "properties": {
+                      "field": "deviceid",
+                      "operator": "equal",
+                      "value": [
+                        117
+                      ],
+                      "valueSrc": [
+                        "value"
+                      ],
+                      "valueType": [
+                        "number"
+                      ]
+                    },
+                    "type": "rule"
+                  }
+                ],
+                "id": "8ab9aba9-89ab-4cde-b012-31866937f008",
+                "type": "group"
+              },
+              "whereString": "deviceid = 117"
+            },
+            "table": "awair_sensor_data"
+          },
+          {
+            "datasource": {
+              "type": "postgres",
+              "uid": "P40AE60E18F02DE32"
+            },
+            "editorMode": "code",
+            "format": "time_series",
+            "hide": false,
+            "rawQuery": true,
+            "rawSql": "SELECT time_bucket((interval '$__interval') * $interval_multiplier, \"time\") AS time,\n       avg(temp) AS avg_temp\nFROM awair_sensor_data\nWHERE deviceid = '19796' AND \"time\" >= $__timeFrom() AND \"time\" <= $__timeTo()\nGROUP BY 1\nORDER BY 1",
+            "refId": "Bed Room",
+            "sql": {
+              "columns": [
+                {
+                  "parameters": [
+                    {
+                      "name": "\"time\"",
+                      "type": "functionParameter"
+                    }
+                  ],
+                  "type": "function"
+                },
+                {
+                  "parameters": [
+                    {
+                      "name": "temp",
+                      "type": "functionParameter"
+                    }
+                  ],
+                  "type": "function"
+                }
+              ],
+              "groupBy": [
+                {
+                  "property": {
+                    "type": "string"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "limit": 50
+            },
+            "table": "awair_sensor_data"
+          }
+        ],
+        "title": "Temperature",
+        "transformations": [],
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P40AE60E18F02DE32"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "axisSoftMax": 70,
+              "axisSoftMin": 50,
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "dashed+area"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": null
+                },
+                {
+                  "color": "green",
+                  "value": 30
+                },
+                {
+                  "color": "#EAB839",
+                  "value": 50
+                },
+                {
+                  "color": "red",
+                  "value": 60
+                }
+              ]
+            },
+            "unit": "humidity"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Living Room"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Living Room"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Bed Room"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Bed Room"
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 8,
+          "x": 8,
+          "y": 10
+        },
+        "id": 17,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "postgres",
+              "uid": "P40AE60E18F02DE32"
+            },
+            "editorMode": "code",
+            "format": "time_series",
+            "hide": false,
+            "rawQuery": true,
+            "rawSql": "SELECT time_bucket((interval '$__interval') * $interval_multiplier, \"time\") AS time,\n       avg(humid) AS avg_humid\nFROM awair_sensor_data\nWHERE deviceid = '117' AND \"time\" >= $__timeFrom() AND \"time\" <= $__timeTo()\nGROUP BY 1\nORDER BY 1",
+            "refId": "Living Room",
+            "sql": {
+              "columns": [
+                {
+                  "parameters": [
+                    {
+                      "name": "\"time\"",
+                      "type": "functionParameter"
+                    }
+                  ],
+                  "type": "function"
+                },
+                {
+                  "parameters": [
+                    {
+                      "name": "temp",
+                      "type": "functionParameter"
+                    }
+                  ],
+                  "type": "function"
+                }
+              ],
+              "groupBy": [
+                {
+                  "property": {
+                    "name": "deviceid",
+                    "type": "string"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "limit": 50,
+              "whereJsonTree": {
+                "children1": [
+                  {
+                    "id": "989a9bab-cdef-4012-b456-71866969c7ef",
+                    "properties": {
+                      "field": "deviceid",
+                      "operator": "equal",
+                      "value": [
+                        117
+                      ],
+                      "valueSrc": [
+                        "value"
+                      ],
+                      "valueType": [
+                        "number"
+                      ]
+                    },
+                    "type": "rule"
+                  }
+                ],
+                "id": "8ab9aba9-89ab-4cde-b012-31866937f008",
+                "type": "group"
+              },
+              "whereString": "deviceid = 117"
+            },
+            "table": "awair_sensor_data"
+          },
+          {
+            "datasource": {
+              "type": "postgres",
+              "uid": "P40AE60E18F02DE32"
+            },
+            "editorMode": "code",
+            "format": "time_series",
+            "hide": false,
+            "rawQuery": true,
+            "rawSql": "SELECT time_bucket((interval '$__interval') * $interval_multiplier, \"time\") AS time,\n       avg(humid) AS avg_humid\nFROM awair_sensor_data\nWHERE deviceid = '19796' AND \"time\" >= $__timeFrom() AND \"time\" <= $__timeTo()\nGROUP BY 1\nORDER BY 1",
+            "refId": "Bed Room",
+            "sql": {
+              "columns": [
+                {
+                  "parameters": [
+                    {
+                      "name": "\"time\"",
+                      "type": "functionParameter"
+                    }
+                  ],
+                  "type": "function"
+                },
+                {
+                  "parameters": [
+                    {
+                      "name": "temp",
+                      "type": "functionParameter"
+                    }
+                  ],
+                  "type": "function"
+                }
+              ],
+              "groupBy": [
+                {
+                  "property": {
+                    "type": "string"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "limit": 50
+            },
+            "table": "awair_sensor_data"
+          }
+        ],
+        "title": "Humidity",
+        "transformations": [],
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P40AE60E18F02DE32"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "axisSoftMax": 750,
+              "axisSoftMin": 400,
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "dashed+area"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "#EAB839",
+                  "value": 700
+                },
+                {
+                  "color": "red",
+                  "value": 1000
+                }
+              ]
+            },
+            "unit": "ppm"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Living Room"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Living Room"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Bed Room"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Bed Room"
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 8,
+          "x": 16,
+          "y": 10
+        },
+        "id": 20,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "postgres",
+              "uid": "P40AE60E18F02DE32"
+            },
+            "editorMode": "code",
+            "format": "time_series",
+            "hide": false,
+            "rawQuery": true,
+            "rawSql": "SELECT time_bucket((interval '$__interval') * $interval_multiplier, \"time\") AS time,\n       avg(co2) AS avg_co2\nFROM awair_sensor_data\nWHERE deviceid = '117' AND \"time\" >= $__timeFrom() AND \"time\" <= $__timeTo()\nGROUP BY 1\nORDER BY 1",
+            "refId": "Living Room",
+            "sql": {
+              "columns": [
+                {
+                  "parameters": [
+                    {
+                      "name": "\"time\"",
+                      "type": "functionParameter"
+                    }
+                  ],
+                  "type": "function"
+                },
+                {
+                  "parameters": [
+                    {
+                      "name": "temp",
+                      "type": "functionParameter"
+                    }
+                  ],
+                  "type": "function"
+                }
+              ],
+              "groupBy": [
+                {
+                  "property": {
+                    "name": "deviceid",
+                    "type": "string"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "limit": 50,
+              "whereJsonTree": {
+                "children1": [
+                  {
+                    "id": "989a9bab-cdef-4012-b456-71866969c7ef",
+                    "properties": {
+                      "field": "deviceid",
+                      "operator": "equal",
+                      "value": [
+                        117
+                      ],
+                      "valueSrc": [
+                        "value"
+                      ],
+                      "valueType": [
+                        "number"
+                      ]
+                    },
+                    "type": "rule"
+                  }
+                ],
+                "id": "8ab9aba9-89ab-4cde-b012-31866937f008",
+                "type": "group"
+              },
+              "whereString": "deviceid = 117"
+            },
+            "table": "awair_sensor_data"
+          },
+          {
+            "datasource": {
+              "type": "postgres",
+              "uid": "P40AE60E18F02DE32"
+            },
+            "editorMode": "code",
+            "format": "time_series",
+            "hide": false,
+            "rawQuery": true,
+            "rawSql": "SELECT time_bucket((interval '$__interval') * $interval_multiplier, \"time\") AS time,\n       avg(co2) AS avg_co2\nFROM awair_sensor_data\nWHERE deviceid = '19796' AND \"time\" >= $__timeFrom() AND \"time\" <= $__timeTo()\nGROUP BY 1\nORDER BY 1",
+            "refId": "Bed Room",
+            "sql": {
+              "columns": [
+                {
+                  "parameters": [
+                    {
+                      "name": "\"time\"",
+                      "type": "functionParameter"
+                    }
+                  ],
+                  "type": "function"
+                },
+                {
+                  "parameters": [
+                    {
+                      "name": "temp",
+                      "type": "functionParameter"
+                    }
+                  ],
+                  "type": "function"
+                }
+              ],
+              "groupBy": [
+                {
+                  "property": {
+                    "type": "string"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "limit": 50
+            },
+            "table": "awair_sensor_data"
+          }
+        ],
+        "title": "CO2",
+        "transformations": [],
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P40AE60E18F02DE32"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "axisSoftMax": 2500,
+              "axisSoftMin": 0,
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "dashed+area"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "#EAB839",
+                  "value": 380
+                },
+                {
+                  "color": "red",
+                  "value": 2000
+                }
+              ]
+            },
+            "unit": "conppb"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Living Room"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Living Room"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Bed Room"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Bed Room"
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 8,
+          "x": 8,
+          "y": 19
+        },
+        "id": 23,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "postgres",
+              "uid": "P40AE60E18F02DE32"
+            },
+            "editorMode": "code",
+            "format": "time_series",
+            "hide": false,
+            "rawQuery": true,
+            "rawSql": "SELECT time_bucket((interval '$__interval') * $interval_multiplier, \"time\") AS time,\n       avg(voc) AS avg_voc\nFROM awair_sensor_data\nWHERE deviceid = '117' AND \"time\" >= $__timeFrom() AND \"time\" <= $__timeTo()\nGROUP BY 1\nORDER BY 1",
+            "refId": "Living Room",
+            "sql": {
+              "columns": [
+                {
+                  "parameters": [
+                    {
+                      "name": "\"time\"",
+                      "type": "functionParameter"
+                    }
+                  ],
+                  "type": "function"
+                },
+                {
+                  "parameters": [
+                    {
+                      "name": "temp",
+                      "type": "functionParameter"
+                    }
+                  ],
+                  "type": "function"
+                }
+              ],
+              "groupBy": [
+                {
+                  "property": {
+                    "name": "deviceid",
+                    "type": "string"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "limit": 50,
+              "whereJsonTree": {
+                "children1": [
+                  {
+                    "id": "989a9bab-cdef-4012-b456-71866969c7ef",
+                    "properties": {
+                      "field": "deviceid",
+                      "operator": "equal",
+                      "value": [
+                        117
+                      ],
+                      "valueSrc": [
+                        "value"
+                      ],
+                      "valueType": [
+                        "number"
+                      ]
+                    },
+                    "type": "rule"
+                  }
+                ],
+                "id": "8ab9aba9-89ab-4cde-b012-31866937f008",
+                "type": "group"
+              },
+              "whereString": "deviceid = 117"
+            },
+            "table": "awair_sensor_data"
+          },
+          {
+            "datasource": {
+              "type": "postgres",
+              "uid": "P40AE60E18F02DE32"
+            },
+            "editorMode": "code",
+            "format": "time_series",
+            "hide": false,
+            "rawQuery": true,
+            "rawSql": "SELECT time_bucket((interval '$__interval') * $interval_multiplier, \"time\") AS time,\n       avg(voc) AS avg_voc\nFROM awair_sensor_data\nWHERE deviceid = '19796' AND \"time\" >= $__timeFrom() AND \"time\" <= $__timeTo()\nGROUP BY 1\nORDER BY 1\n",
+            "refId": "Bed Room",
+            "sql": {
+              "columns": [
+                {
+                  "parameters": [
+                    {
+                      "name": "\"time\"",
+                      "type": "functionParameter"
+                    }
+                  ],
+                  "type": "function"
+                },
+                {
+                  "parameters": [
+                    {
+                      "name": "temp",
+                      "type": "functionParameter"
+                    }
+                  ],
+                  "type": "function"
+                }
+              ],
+              "groupBy": [
+                {
+                  "property": {
+                    "type": "string"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "limit": 50
+            },
+            "table": "awair_sensor_data"
+          }
+        ],
+        "title": "VOC",
+        "transformations": [],
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P40AE60E18F02DE32"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "axisSoftMax": 45,
+              "axisSoftMin": 0,
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "dashed+area"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "#EAB839",
+                  "value": 12
+                },
+                {
+                  "color": "red",
+                  "value": 35
+                }
+              ]
+            },
+            "unit": "conppb"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Living Room"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Living Room"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "Bed Room"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Bed Room"
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 8,
+          "x": 16,
+          "y": 19
+        },
+        "id": 24,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "postgres",
+              "uid": "P40AE60E18F02DE32"
+            },
+            "editorMode": "code",
+            "format": "time_series",
+            "hide": false,
+            "rawQuery": true,
+            "rawSql": "SELECT time_bucket((interval '$__interval') * $interval_multiplier, \"time\") AS time,\n       avg(pm25) AS avg_pm25\nFROM awair_sensor_data\nWHERE deviceid = '117' AND \"time\" >= $__timeFrom() AND \"time\" <= $__timeTo()\nGROUP BY 1\nORDER BY 1",
+            "refId": "Living Room",
+            "sql": {
+              "columns": [
+                {
+                  "parameters": [
+                    {
+                      "name": "\"time\"",
+                      "type": "functionParameter"
+                    }
+                  ],
+                  "type": "function"
+                },
+                {
+                  "parameters": [
+                    {
+                      "name": "temp",
+                      "type": "functionParameter"
+                    }
+                  ],
+                  "type": "function"
+                }
+              ],
+              "groupBy": [
+                {
+                  "property": {
+                    "name": "deviceid",
+                    "type": "string"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "limit": 50,
+              "whereJsonTree": {
+                "children1": [
+                  {
+                    "id": "989a9bab-cdef-4012-b456-71866969c7ef",
+                    "properties": {
+                      "field": "deviceid",
+                      "operator": "equal",
+                      "value": [
+                        117
+                      ],
+                      "valueSrc": [
+                        "value"
+                      ],
+                      "valueType": [
+                        "number"
+                      ]
+                    },
+                    "type": "rule"
+                  }
+                ],
+                "id": "8ab9aba9-89ab-4cde-b012-31866937f008",
+                "type": "group"
+              },
+              "whereString": "deviceid = 117"
+            },
+            "table": "awair_sensor_data"
+          },
+          {
+            "datasource": {
+              "type": "postgres",
+              "uid": "P40AE60E18F02DE32"
+            },
+            "editorMode": "code",
+            "format": "time_series",
+            "hide": false,
+            "rawQuery": true,
+            "rawSql": "SELECT time_bucket((interval '$__interval') * $interval_multiplier, \"time\") AS time,\n       avg(pm25) AS avg_pm25\nFROM awair_sensor_data\nWHERE deviceid = '19796' AND \"time\" >= $__timeFrom() AND \"time\" <= $__timeTo()\nGROUP BY 1\nORDER BY 1",
+            "refId": "Bed Room",
+            "sql": {
+              "columns": [
+                {
+                  "parameters": [
+                    {
+                      "name": "\"time\"",
+                      "type": "functionParameter"
+                    }
+                  ],
+                  "type": "function"
+                },
+                {
+                  "parameters": [
+                    {
+                      "name": "temp",
+                      "type": "functionParameter"
+                    }
+                  ],
+                  "type": "function"
+                }
+              ],
+              "groupBy": [
+                {
+                  "property": {
+                    "type": "string"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "limit": 50
+            },
+            "table": "awair_sensor_data"
+          }
+        ],
+        "title": "PM2.5",
+        "transformations": [],
+        "type": "timeseries"
+      }
+    ],
+    "refresh": "1m",
+    "schemaVersion": 37,
+    "style": "dark",
+    "tags": [],
+    "templating": {
+      "list": [
+        {
+          "current": {
+            "selected": false,
+            "text": "1",
+            "value": "1"
+          },
+          "hide": 0,
+          "label": "Interval Multiplier",
+          "name": "interval_multiplier",
+          "options": [
+            {
+              "selected": true,
+              "text": "1",
+              "value": "1"
+            }
+          ],
+          "query": "1",
+          "skipUrlSync": false,
+          "type": "textbox"
+        }
+      ]
+    },
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "",
+    "title": "Air Quality",
+    "uid": "NyteFs1Vz",
+    "version": 23,
+    "weekStart": ""
+  }
