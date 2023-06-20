@@ -1,3 +1,9 @@
+// This file takes a GeoJSON file and imports it into the database
+// The GeoJSON file contains all the visited places from Google Maps
+// First you must download your Google Maps data from here: https://takeout.google.com/settings/takeout
+// The Takeout data is then converted to GeoJSON using this tool: https://geoprocessing.online/tool/google-location-history/
+// TODO: Write a new script to convert the Takeout data to GeoJSON, instead of using the online tool.
+
 const fs = require('fs');
 const path = require('path');
 const db = require('../_utils/db.js');
