@@ -11,6 +11,8 @@ FROM mcr.microsoft.com/devcontainers/javascript-node:0-18
 
 # [Optional] Uncomment if you want to install more global node modules
 # RUN su node -c "npm install -g pm2"
+# RUN apt-get install nc
+RUN apt-get update && sudo apt-get install netcat-openbsd -y
 RUN npm install -g pm2
 WORKDIR /workspaces/superscraper/
 USER node

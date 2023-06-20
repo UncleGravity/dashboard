@@ -8,9 +8,24 @@ cd /workspaces/superscraper
 npm run clean
 npm install
 
-# echo "Waiting 5 seconds for postgres to start!"
-sleep 5
-# pm2-docker start ecosystem.config.js
+# Check if the PostgreSQL server is ready
+# TODO check that timecaledb + postgis extensions are installed and DB is ready to accept connections
+echo "Waiting for PostgreSQL server to become ready..."
+while ! nc -z -v -w 5 "${POSTGRES_URL}" "${POSTGRES_PORT}"; do
+  sleep 1
+done
 
-# run command passed in via CMD in Dockerfile
+# sleep 5 # Not needed anymore as we wait for PostgreSQL server readiness above
+
+# Import geojson data
+# TODO Only do it if the table is empty?
+echo "Manually importing google maps data..."
+node /workspaces/superscraper/scrapers/maps/import-geojson.js
+
+# Start pm2-docker
+echo "Starting scrapers..."
+pm2-docker start ecosystem.config.js
+
+# NOTE: I think this never runs, because pm2-docker blocks the shell for some reason, even if running with & at the end
+# Run command passed in via CMD in Dockerfile
 exec "$@"
