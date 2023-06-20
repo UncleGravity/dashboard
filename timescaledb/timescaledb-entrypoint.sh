@@ -14,7 +14,8 @@ done
 echo "PostgreSQL started."
 
 # Enable PostGIS extension
-psql -U $POSTGRES_USER -d $POSTGRES_DB -c 'CREATE EXTENSION IF NOT EXISTS postgis;'
+# psql -U $POSTGRES_USER -d $POSTGRES_DB -c 'CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;'
+psql -U $POSTGRES_USER -d $POSTGRES_DB -c 'CREATE EXTENSION IF NOT EXISTS postgis CASCADE;'
 
 # Create new schemas
 psql -U $POSTGRES_USER -d $POSTGRES_DB -c 'CREATE SCHEMA telegraf;'

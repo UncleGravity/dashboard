@@ -23,7 +23,7 @@ app.get('/', async (req, res) => {
 
 // Start server
 app.listen(serverPort, () => {
-    console.log('Server listening on port ' + serverPort + '...');
+    console.log('Healthkit Scraper server listening on port ' + serverPort + '...');
 });
 
 //--- Endpoints handling functions
