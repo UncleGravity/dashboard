@@ -10,27 +10,40 @@ services:
     build: 
       context: ./timescaledb
       dockerfile: timescaledb.Dockerfile
+      # dockerfile: postgres_timescaledb_postgis.Dockerfile
     restart: unless-stopped
     ports:
       - ${POSTGRES_PORT}:5432
     volumes:
-      - timescaledb-data:/var/lib/postgresql/data
+      - timescaledb-data:/var/lib/postgresql/data #timescaledb
+      # - timescaledb-data:/home/postgres/pgdata/data #timescaledb-ha
     env_file:
       - .env
 
   # PGADMIN ###################################################
+  # TODO: figure out a way to make this work with the .env file and not hard coded server.json
+  # More info: https://stackoverflow.com/questions/66578506/where-is-the-pgpass-file-in-pgadmin4-docker-container-when-this-file-is-mounted/69475874#69475874
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4:latest
     ports:
       - ${PGADMIN_PORT}:80
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: root
-      # PGADMIN_CONFIG_SERVER_JSON_FILE: /pgadmin4/servers.json
-    # volumes:
-    #   - ./pgadmin/servers.json:/pgadmin4/servers.json
-    #   - ./pgadmin/pgpass:/pgadmin4/pgpass
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    volumes:
+      # - ./pgadmin/servers.json:/pgadmin4/servers.json
+      - pgadmin-data:/var/lib/pgadmin
+      # - ./pgadmin/pgpass:/pgadmin4/pgpass # passwords for the connections in this file
+      # /var/lib/pgadmin/storage/<USERNAME>_<DOMAIN>/
+    # entrypoint: >
+    #   /bin/sh -c "
+    #   mkdir -m 700 /var/lib/pgadmin/storage/admin_admin.com;
+    #   chown -R pgadmin:pgadmin /var/lib/pgadmin/storage/admin_admin.com;
+    #   cp -prv /pgadmin4/pgpass /var/lib/pgadmin/storage/admin_admin.com/;
+    #   chmod 600 /var/lib/pgadmin/storage/admin_admin.com/pgpass;
+    #   /entrypoint.sh
+    #   " 
     depends_on:
       - timescaledb
     env_file:
@@ -40,7 +53,7 @@ services:
   telegraf:
     container_name: telegraf
     image: telegraf:latest
-    user: telegraf:999 # <--- important, calculate user that owns docker.sock -> $(stat -c '%g' /var/run/docker.sock)
+    user: telegraf:999 # <--- TODO important, calculate user that owns docker.sock -> $(stat -c '%g' /var/run/docker.sock)
     network_mode: host
     volumes:
       - /:/hostfs:ro
@@ -82,8 +95,8 @@ services:
 
     # Use "forwardPorts" in **devcontainer.json** to forward an app port locally. 
     # (Adding the "ports" property to this file will not forward from a Codespace.)
-    depends_on:
-      - timescaledb
+    # depends_on:
+    #   - timescaledb
     env_file:
       - .env
 
@@ -110,3 +123,4 @@ volumes:
   prometheus-data:
   timescaledb-data:
   grafana-data:
+  pgadmin-data:
