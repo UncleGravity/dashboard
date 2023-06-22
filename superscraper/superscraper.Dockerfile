@@ -16,5 +16,5 @@ RUN apt-get update && sudo apt-get install netcat-openbsd -y
 RUN npm install -g pm2
 WORKDIR /workspaces/superscraper/
 USER node
-ENTRYPOINT [ "/workspaces/superscraper/docker-entrypoint.sh" ]
+ENTRYPOINT [ "/workspaces/superscraper/superscraper-entrypoint.sh" ]
 CMD [ "sleep", "infinity" ]
