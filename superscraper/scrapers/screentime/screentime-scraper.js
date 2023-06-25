@@ -6,7 +6,7 @@ const schema = 'app_usage';
 // const tableName = 'raw_screen_time_data';
 // const uniqueColumns = ['time', 'appname', 'deviceid'];
 
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '50mb' }));
 const serverPort = process.env.SCRAPER_SCREENTIME_PORT;
 
 app.post('/test', (req, res) => {

@@ -8,7 +8,7 @@ const schema = 'maps';
 const tableName = 'raw_visited_places';
 const uniqueColumns = ['time', 'coordinates'];
 
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '50mb' }));
 const serverPort = process.env.SCRAPER_MAPS_PORT;
 
 ////////////////////////////////////////////////////
