@@ -133,7 +133,7 @@ async function saveData(schema, tableName, data, uniqueColumns) {
         try {
           // Execute the INSERT query
           await pool.query(query.text, query.values);
-          console.log(`Inserted chunk ${i + 1}/${i} with ${chunk.length} rows into ${tableName}.`);
+          console.log(`Inserted chunk ${i + 1}/${chunks.length} with ${chunk.length} rows into ${tableName}.`);
         } catch (error) {
           console.error(`Error occurred while inserting rows into ${schema}.${tableName}`, error);
           throw error;
