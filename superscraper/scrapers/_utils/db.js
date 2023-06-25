@@ -101,29 +101,43 @@ let healthKitData = [
     ]
 ];
 */
+
 async function saveData(schema, tableName, data, uniqueColumns) {
+    
+    // Check if there is any data to insert
     if (!data || data.length === 0 || data[0].length === 0) {
         console.log(`No data for ${tableName}, skipping table creation and insertion.`);
         return;
     }
-
-    // // Create Schema
+    
+    // Create Schema
     console.log(`Creating schema ${schema}`);
     await createSchema(schema);
 
     // Create table if it doesn't exist
     await createTable(schema, tableName, data[0], uniqueColumns);
 
-    // Prepare the INSERT query
-    const query = prepareInsertQuery(schema, tableName, data, uniqueColumns);
+    const BATCH_SIZE = 1000;  // Adjust the batch size based on your requirements
 
-    try {
-        // Execute the INSERT query
-        await pool.query(query);
-        console.log(`Inserted ${data.length} rows into ${tableName}.`);
-    } catch (error) {
-        console.error(`Error occurred while inserting rows into ${schema}.${tableName}`, error);
-        throw error;
+    // Split data into smaller chunks (too large could cause memory issues)
+    const chunks = [];
+    for (let i = 0; i < data.length; i += BATCH_SIZE) {
+        chunks.push(data.slice(i, i + BATCH_SIZE));
+    }
+    
+    // Run a batch insert for each chunk
+    for (let i = 0; i < chunks.length; i++) {
+        const chunk = chunks[i];
+        const query = prepareInsertQuery(schema, tableName, chunk, uniqueColumns);
+
+        try {
+          // Execute the INSERT query
+          await pool.query(query.text, query.values);
+          console.log(`Inserted chunk ${i + 1}/${i} with ${chunk.length} rows into ${tableName}.`);
+        } catch (error) {
+          console.error(`Error occurred while inserting rows into ${schema}.${tableName}`, error);
+          throw error;
+        }
     }
 }
 
@@ -146,6 +160,13 @@ function prepareInsertQuery(schema, tableName, data, uniqueColumns) {
     const insertQuery = `INSERT INTO ${schema}.${tableName} (${columnNames.join(', ')}) 
                          VALUES ${placeholders.join(', ')}
                          ON CONFLICT (${uniqueColumnsString}) DO NOTHING;`;
+
+    // console.log("Data:", data);
+    // console.log("Column Names:", columnNames);
+    // console.log("Values:", values);
+    // console.log("Placeholders:", placeholders);
+    // console.log("Final Insert Query:", insertQuery);
+                         
 
     return { text: insertQuery, values: values };
 }
