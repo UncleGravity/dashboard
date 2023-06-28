@@ -89,7 +89,7 @@ async function processMetrics(metrics) {
             case 'HKCategoryTypeIdentifierSleepAnalysis':
                 metricData = [
                     { name: "time",         value: date,            type: 'TIMESTAMP WITH TIME ZONE' },
-                    { name:  "endDate",     value: endDate,         type: 'TIMESTAMP WITH TIME ZONE' },
+                    { name: "endDate",      value: endDate,         type: 'TIMESTAMP WITH TIME ZONE' },
                     { name: "timezone",     value: timezone,        type: 'TEXT' },
                     { name: "value",        value: metric.value,    type: 'DOUBLE PRECISION' },
                     { name: "source",       value: source,          type: 'TEXT' }
