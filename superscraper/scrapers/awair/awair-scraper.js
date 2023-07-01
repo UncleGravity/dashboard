@@ -41,6 +41,9 @@ async function main() {
         console.error(`Error saving data to database: ${error}`);
       });
     }
+
+    console.log(`Success: scraped data from ${deviceIds}`);
+
   } catch (error) {
     console.error(`An unexpected error occurred: ${error}`);
   }
