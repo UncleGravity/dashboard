@@ -1,28 +1,48 @@
-const { getAirData, getDevices, getDeviceIdList } = require("./awair-api.js");
+const { getAirData, getDeviceIdList } = require("./awair-api.js");
 const db = require("../_utils/db.js");
 
 const AIRDATA_SCHEMA_NAME = "awair";
 const AIRDATA_TABLE_NAME = "awair_sensor_data";
-const UNIQUE_COLUMNS = ['time','location'];
+const UNIQUE_COLUMNS = ['time','deviceid'];
 
 async function main() {
-
-  // save data for all devices
-  for (const deviceId of await getDeviceIdList()) {
-    const airData = await getAirData(deviceId);
-    const formattedData = airData.map(entry => {
-      const [time, temp, humid, co2, voc, pm25] = entry.split(",");
-      return [
-        { name: "time",     value: time,     type: 'TIMESTAMPTZ' },
-        { name: "deviceid", value: deviceId, type: 'INTEGER' },
-        { name: "temp",     value: temp,     type: 'FLOAT' },
-        { name: "humid",    value: humid,    type: 'FLOAT' },
-        { name: "co2",      value: co2,      type: 'INTEGER' },
-        { name: "voc",      value: voc,      type: 'INTEGER' },
-        { name: "pm25",     value: pm25,     type: 'INTEGER' }
-      ];
+  try {
+    // get list of device IDs
+    const deviceIds = await getDeviceIdList().catch(error => {
+      console.error(`Error retrieving device IDs: ${error}`);
+      return [];
     });
-    await db.saveData(AIRDATA_SCHEMA_NAME, AIRDATA_TABLE_NAME, formattedData, UNIQUE_COLUMNS);
+
+    // process each device
+    for (const deviceId of deviceIds) {
+      // get air data for device
+      const airData = await getAirData(deviceId).catch(error => {
+        console.error(`Error retrieving air data for device ${deviceId}: ${error}`);
+        return [];
+      });
+
+      const formattedData = airData.map(entry => {
+        const [time, temp, humid, co2, voc, pm25] = entry.split(",");
+        return [
+          { name: "time",     value: time,     type: 'TIMESTAMPTZ' },
+          { name: "deviceid", value: deviceId, type: 'INTEGER' },
+          { name: "temp",     value: temp,     type: 'FLOAT' },
+          { name: "humid",    value: humid,    type: 'FLOAT' },
+          { name: "co2",      value: co2,      type: 'INTEGER' },
+          { name: "voc",      value: voc,      type: 'INTEGER' },
+          { name: "pm25",     value: pm25,     type: 'INTEGER' }
+        ];
+      });
+
+      // console.log(formattedData);
+
+      await db.saveData(AIRDATA_SCHEMA_NAME, AIRDATA_TABLE_NAME, formattedData, UNIQUE_COLUMNS)
+      .catch(error => {
+        console.error(`Error saving data to database: ${error}`);
+      });
+    }
+  } catch (error) {
+    console.error(`An unexpected error occurred: ${error}`);
   }
 
   // read 100 rows from table (for testing)
@@ -30,12 +50,15 @@ async function main() {
     // const rows = await db.readData(AIRDATA_SCHEMA_NAME, AIRDATA_TABLE_NAME, 100);
     // console.log(rows);
   // }
-}
 
+}
 
 // run main function every 5 minutes
 setInterval(main, 240000);
-main();
+
+// initial run
+main().catch(error => console.error(`An error occurred while running the awair main function: ${error}`));
+
 
 /*
 

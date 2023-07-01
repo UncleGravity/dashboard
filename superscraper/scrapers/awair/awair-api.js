@@ -160,4 +160,4 @@ async function test() {
 
 // test()
 
-module.exports = { getDevices, getAirData, getDeviceIdList };
+module.exports = { getAirData, getDeviceIdList };

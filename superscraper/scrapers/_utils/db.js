@@ -55,7 +55,7 @@ async function createTable(schema, tableName, columns, uniqueColumns) {
     // Check if the table exists
     const tableExists = await doesTableExist(schema, tableName);
     if (tableExists) {
-        console.log(`Table ${schema}.${tableName} already exists, skipping table creation.`);
+        // console.log(`Table ${schema}.${tableName} already exists, skipping table creation.`);
         return;
     }
 
