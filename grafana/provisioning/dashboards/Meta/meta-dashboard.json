@@ -26,7 +26,7 @@
   "fiscalYearStartMonth": 0,
   "gnetId": 893,
   "graphTooltip": 1,
-  "id": 5,
+  "id": 2,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -829,6 +829,18 @@
                 "value": 67
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "schema"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 90
+              }
+            ]
           }
         ]
       },
@@ -850,7 +862,12 @@
           "show": false
         },
         "showHeader": true,
-        "sortBy": []
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "hypertable_name"
+          }
+        ]
       },
       "pluginVersion": "10.1.0-121880pre",
       "targets": [
@@ -862,7 +879,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT hypertable_name, hypertable_size(format('%I.%I', hypertable_schema, hypertable_name)::regclass) as size_in_mb, approximate_row_count(hypertable_schema || '.' || hypertable_name) as rows, compression_enabled as compressed, num_chunks as chunks\nFROM timescaledb_information.hypertables;",
+          "rawSql": "-- select * from timescaledb_information.hypertables\n\nSELECT hypertable_schema as schema,\n  hypertable_name as name,\n  -- hypertable_size(format('%I.%I', hypertable_schema, hypertable_name)::regclass) as size_in_mb, \n  approximate_row_count(hypertable_schema || '.' || hypertable_name) as rows, \n  compression_enabled as compressed, \n  num_chunks as chunks\nFROM timescaledb_information.hypertables\nORDER BY\n  schema;\n  -- size_in_mb;\n\n-- SELECT hypertable_schema as schema,\n--   hypertable_name as name, \n--   -- hypertable_size(format('%I.%I', hypertable_schema, hypertable_name)::regclass) as size_in_mb, \n--   approximate_row_count(hypertable_schema || '.' || hypertable_name) as rows, \n--   compression_enabled as compressed, \n--   num_chunks as chunks\n-- FROM timescaledb_information.hypertables;\n\n\n-- SELECT hypertable_name, \n-- hypertable_size(format('%I.%I', hypertable_schema, hypertable_name)::regclass) as size_in_mb,\n-- compression_enabled as compressed, \n-- num_chunks as chunks\n-- FROM timescaledb_information.hypertables;\n\n-- SELECT hypertable_name, \n-- approximate_row_count(hypertable_schema || '.' || hypertable_name) as rows,\n-- compression_enabled as compressed, \n-- num_chunks as chunks\n-- FROM timescaledb_information.hypertables;\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1470,7 +1487,7 @@
         "y": 10
       },
       "id": 39,
-      "interval": "30s",
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [],
@@ -2140,7 +2157,7 @@
         "y": 15
       },
       "id": 61,
-      "interval": "30s",
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -2288,7 +2305,7 @@
         "y": 15
       },
       "id": 66,
-      "interval": "30s",
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -2825,6 +2842,6 @@
   "timezone": "browser",
   "title": "Server and Docker",
   "uid": "LLtQxKb4z",
-  "version": 6,
+  "version": 8,
   "weekStart": ""
 }
