@@ -322,7 +322,7 @@
           "format": "time_series",
           "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT \n    time_bucket AS \"time\",\n    interface,\n    bytes_tx,\n    bytes_rx * -1 as bytes_rx\nFROM \n(\n    SELECT \n    time_bucket('$__interval', \"time\") as time_bucket,\n    interface,\n    bytes_sent - lag(bytes_sent, 1, 0) OVER (PARTITION BY interface ORDER BY time_bucket('$__interval', \"time\")) AS bytes_tx,\n    bytes_recv - lag(bytes_recv, 1, 0) OVER (PARTITION BY interface ORDER BY time_bucket('$__interval', \"time\")) AS bytes_rx\n    FROM net\n    WHERE interface NOT IN ('all', 'lo')\n) sub_query\nORDER BY \n  \"time\" ASC,\n  interface ASC;\n",
+          "rawSql": "SELECT \n    time_bucket AS \"time\",\n    interface,\n    bytes_tx,\n    bytes_rx * -1 as bytes_rx\nFROM \n(\n    SELECT \n        time_bucket('$__interval', \"time\") as time_bucket,\n        interface,\n        CASE\n            WHEN bytes_sent - lag(bytes_sent, 1, bytes_sent) OVER (PARTITION BY interface ORDER BY time_bucket('$__interval', \"time\")) >= 0 THEN\n                bytes_sent - lag(bytes_sent, 1, bytes_sent) OVER (PARTITION BY interface ORDER BY time_bucket('$__interval', \"time\"))\n            ELSE\n                NULL\n        END AS bytes_tx,\n        CASE\n            WHEN bytes_recv - lag(bytes_recv, 1, bytes_recv) OVER (PARTITION BY interface ORDER BY time_bucket('$__interval', \"time\")) >= 0 THEN\n                bytes_recv - lag(bytes_recv, 1, bytes_recv) OVER (PARTITION BY interface ORDER BY time_bucket('$__interval', \"time\"))\n            ELSE\n                NULL\n        END AS bytes_rx\n    FROM \n        net\n    WHERE \n        $__timeFilter(time) AND interface NOT IN ('all', 'lo')\n) sub_query\nWHERE \n    bytes_tx IS NOT NULL AND bytes_rx IS NOT NULL\nORDER BY \n    \"time\" ASC,\n    interface ASC;\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2825,6 +2825,6 @@
   "timezone": "browser",
   "title": "Server and Docker",
   "uid": "LLtQxKb4z",
-  "version": 4,
+  "version": 6,
   "weekStart": ""
 }
