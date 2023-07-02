@@ -94,7 +94,7 @@ async function getDevices() {
   try {
     const response = await axios(config);
     // console.log(response.data);
-    return response.data.devices.length > 0 ? response.data : [];
+    return response.data.devices.length > 0 ? response.data.devices : [];
   } catch (error) {
     throw error;
   }
@@ -104,8 +104,8 @@ async function getDeviceIdList() {
   const devices = await getDevices();
 
   const deviceIds = [];
-  for (let i = 0; i < devices.devices.length; i++) {
-    deviceIds.push(devices.devices[i].deviceId);
+  for (let i = 0; i < devices.length; i++) {
+    deviceIds.push(devices[i].deviceId);
   }
 
   return deviceIds;
@@ -150,7 +150,7 @@ function saveDataToFile(airData, fileName) {
 // console.log(getLastTimestamp("177"))
 async function test() {
   console.log(await getDevices())
-  console.log(await getAirData("117"))
+  // console.log(await getAirData("117"))
   // let response = await getAirData("117")
   // console.log(response)
   // data = extractAirData(response)
@@ -160,4 +160,4 @@ async function test() {
 
 // test()
 
-module.exports = { getAirData, getDeviceIdList };
+module.exports = { getDevices, getAirData, getDeviceIdList };

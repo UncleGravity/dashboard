@@ -1,4 +1,4 @@
-const { getAirData, getDeviceIdList } = require("./awair-api.js");
+const { getDevices, getAirData, getDeviceIdList } = require("./awair-api.js");
 const db = require("../_utils/db.js");
 
 const AIRDATA_SCHEMA_NAME = "awair";
@@ -7,14 +7,18 @@ const UNIQUE_COLUMNS = ['time','deviceid'];
 
 async function main() {
   try {
-    // get list of device IDs
-    const deviceIds = await getDeviceIdList().catch(error => {
-      console.error(`Error retrieving device IDs: ${error}`);
+
+    const devices = await getDevices().catch(error => {
+      console.error(`Error retrieving devices: ${error}`);
       return [];
     });
 
     // process each device
-    for (const deviceId of deviceIds) {
+    for (const device of devices) {
+
+      const deviceId = device.deviceId;
+      const deviceName = device.name;
+
       // get air data for device
       const airData = await getAirData(deviceId).catch(error => {
         console.error(`Error retrieving air data for device ${deviceId}: ${error}`);
@@ -24,13 +28,14 @@ async function main() {
       const formattedData = airData.map(entry => {
         const [time, temp, humid, co2, voc, pm25] = entry.split(",");
         return [
-          { name: "time",     value: time,     type: 'TIMESTAMPTZ' },
-          { name: "deviceid", value: deviceId, type: 'INTEGER' },
-          { name: "temp",     value: temp,     type: 'FLOAT' },
-          { name: "humid",    value: humid,    type: 'FLOAT' },
-          { name: "co2",      value: co2,      type: 'INTEGER' },
-          { name: "voc",      value: voc,      type: 'INTEGER' },
-          { name: "pm25",     value: pm25,     type: 'INTEGER' }
+          { name: "time",       value: time,        type: 'TIMESTAMPTZ' },
+          { name: "deviceid",   value: deviceId,    type: 'TEXT' },
+          { name: "devicename", value: deviceName,  type: 'TEXT' },
+          { name: "temp",       value: temp,        type: 'FLOAT' },
+          { name: "humid",      value: humid,       type: 'FLOAT' },
+          { name: "co2",        value: co2,         type: 'INTEGER' },
+          { name: "voc",        value: voc,         type: 'INTEGER' },
+          { name: "pm25",       value: pm25,        type: 'INTEGER' }
         ];
       });
 
@@ -42,6 +47,7 @@ async function main() {
       });
     }
 
+    const deviceIds = await getDeviceIdList();
     console.log(`Success: scraped data from ${deviceIds}`);
 
   } catch (error) {
