@@ -208,7 +208,8 @@
         "x": 4,
         "y": 1
       },
-      "id": 55,
+      "id": 76,
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -231,7 +232,7 @@
           },
           "editorMode": "code",
           "format": "time_series",
-          "hide": false,
+          "hide": true,
           "rawQuery": true,
           "rawSql": "-- SELECT \"time\", interface, bytes_sent FROM net WHERE interface NOT IN ('all') ORDER BY \"time\" ASC\n-- SELECT \"time\", bytes_sent - LAG(bytes_sent) OVER (ORDER BY \"time\") AS bytes_sent_diff FROM net WHERE interface NOT IN ('all', 'eth0') ORDER BY \"time\" DESC\n-- SELECT time, interface, bytes_sent, bytes_recv from net ORDER BY time DESC\n\nSELECT \"time\", interface, bytes_sent - lag(bytes_sent, 1, 0) OVER (PARTITION BY interface ORDER BY \"time\") AS bytes_tx\nFROM net WHERE interface NOT IN ('all', 'lo')\nORDER BY \"time\" ASC",
           "refId": "Sent",
@@ -284,7 +285,7 @@
           },
           "editorMode": "code",
           "format": "time_series",
-          "hide": false,
+          "hide": true,
           "rawQuery": true,
           "rawSql": "-- SELECT \"time\", interface, bytes_recv *-1 as bytes_recv FROM net WHERE interface NOT IN ('all') ORDER BY \"time\" DESC \n-- SELECT \"time\", (bytes_recv - LAG(bytes_recv) OVER (ORDER BY \"time\")) * -1  AS bytes_recv_diff FROM net WHERE interface NOT IN ('all') ORDER BY \"time\" DESC\n-- SELECT \"time\", interface, (bytes_recv * -1) as bytes_recv FROM net WHERE interface NOT IN ('all') ORDER BY \"time\" ASC\n\nSELECT \"time\", interface, (bytes_recv - lag(bytes_recv, 1, 0) OVER (PARTITION BY interface ORDER BY \"time\")) * -1 AS bytes_rx\nFROM net WHERE interface NOT IN ('all', 'lo')\nORDER BY \"time\" ASC\n",
           "refId": "Received",
@@ -311,6 +312,35 @@
             "limit": 50
           },
           "table": "system"
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P40AE60E18F02DE32"
+          },
+          "editorMode": "code",
+          "format": "time_series",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT \n    time_bucket AS \"time\",\n    interface,\n    bytes_tx,\n    bytes_rx * -1 as bytes_rx\nFROM \n(\n    SELECT \n    time_bucket('$__interval', \"time\") as time_bucket,\n    interface,\n    bytes_sent - lag(bytes_sent, 1, 0) OVER (PARTITION BY interface ORDER BY time_bucket('$__interval', \"time\")) AS bytes_tx,\n    bytes_recv - lag(bytes_recv, 1, 0) OVER (PARTITION BY interface ORDER BY time_bucket('$__interval', \"time\")) AS bytes_rx\n    FROM net\n    WHERE interface NOT IN ('all', 'lo')\n) sub_query\nORDER BY \n  \"time\" ASC,\n  interface ASC;\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Network Traffic",
@@ -2756,7 +2786,7 @@
       "type": "row"
     }
   ],
-  "refresh": "5s",
+  "refresh": "1m",
   "schemaVersion": 38,
   "style": "dark",
   "tags": [],
@@ -2764,7 +2794,7 @@
     "list": []
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {
@@ -2795,6 +2825,6 @@
   "timezone": "browser",
   "title": "Server and Docker",
   "uid": "LLtQxKb4z",
-  "version": 2,
+  "version": 4,
   "weekStart": ""
 }
