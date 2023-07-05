@@ -878,6 +878,7 @@
           },
           "editorMode": "code",
           "format": "table",
+          "hide": false,
           "rawQuery": true,
           "rawSql": "-- select * from timescaledb_information.hypertables\n\nSELECT hypertable_schema as schema,\n  hypertable_name as name,\n  -- hypertable_size(format('%I.%I', hypertable_schema, hypertable_name)::regclass) as size_in_mb, \n  approximate_row_count(hypertable_schema || '.' || hypertable_name) as rows, \n  compression_enabled as compressed, \n  num_chunks as chunks\nFROM timescaledb_information.hypertables\nORDER BY\n  schema;\n  -- size_in_mb;\n\n-- SELECT hypertable_schema as schema,\n--   hypertable_name as name, \n--   -- hypertable_size(format('%I.%I', hypertable_schema, hypertable_name)::regclass) as size_in_mb, \n--   approximate_row_count(hypertable_schema || '.' || hypertable_name) as rows, \n--   compression_enabled as compressed, \n--   num_chunks as chunks\n-- FROM timescaledb_information.hypertables;\n\n\n-- SELECT hypertable_name, \n-- hypertable_size(format('%I.%I', hypertable_schema, hypertable_name)::regclass) as size_in_mb,\n-- compression_enabled as compressed, \n-- num_chunks as chunks\n-- FROM timescaledb_information.hypertables;\n\n-- SELECT hypertable_name, \n-- approximate_row_count(hypertable_schema || '.' || hypertable_name) as rows,\n-- compression_enabled as compressed, \n-- num_chunks as chunks\n-- FROM timescaledb_information.hypertables;\n",
           "refId": "A",
@@ -1392,6 +1393,7 @@
           },
           "editorMode": "code",
           "format": "table",
+          "hide": true,
           "rawQuery": true,
           "rawSql": "SELECT\n  relname AS table_name,\n  pg_size_pretty(pg_total_relation_size(relid)) AS table_size\nFROM\n  pg_stat_user_tables\nORDER BY\n  pg_total_relation_size(relid) DESC;\n",
           "refId": "A",
@@ -2803,7 +2805,7 @@
       "type": "row"
     }
   ],
-  "refresh": "1m",
+  "refresh": "10s",
   "schemaVersion": 38,
   "style": "dark",
   "tags": [],
@@ -2842,6 +2844,6 @@
   "timezone": "browser",
   "title": "Server and Docker",
   "uid": "LLtQxKb4z",
-  "version": 8,
+  "version": 9,
   "weekStart": ""
 }

@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 2,
-  "id": 2,
+  "id": 4,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -68,7 +68,7 @@
             "h": 2,
             "w": 2,
             "x": 0,
-            "y": 1
+            "y": 9
           },
           "id": 31,
           "options": {
@@ -155,7 +155,7 @@
             "h": 2,
             "w": 2,
             "x": 2,
-            "y": 1
+            "y": 9
           },
           "id": 30,
           "options": {
@@ -247,7 +247,7 @@
             "h": 2,
             "w": 2,
             "x": 4,
-            "y": 1
+            "y": 9
           },
           "id": 29,
           "options": {
@@ -419,7 +419,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 3
+            "y": 11
           },
           "id": 19,
           "options": {
@@ -1262,6 +1262,345 @@
         }
       ],
       "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P40AE60E18F02DE32"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 0,
+        "y": 11
+      },
+      "id": 34,
+      "options": {
+        "inlineEditing": true,
+        "root": {
+          "background": {
+            "color": {
+              "fixed": "transparent"
+            },
+            "image": {
+              "field": "",
+              "fixed": "",
+              "mode": "fixed"
+            }
+          },
+          "border": {
+            "color": {
+              "fixed": "dark-green"
+            }
+          },
+          "constraint": {
+            "horizontal": "left",
+            "vertical": "top"
+          },
+          "elements": [
+            {
+              "background": {
+                "color": {
+                  "field": "office_id",
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "office_id",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "connections": [],
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 1",
+              "placement": {
+                "height": 26,
+                "left": 76,
+                "top": 48,
+                "width": 106.6796875
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "office_temp",
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "office_temp",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 2",
+              "placement": {
+                "height": 26.53125,
+                "left": 62,
+                "top": 81,
+                "width": 138
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "living_id",
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "living_id",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "living-id",
+              "placement": {
+                "height": 33.5420992248062,
+                "left": 319,
+                "top": 34,
+                "width": 131.44127131782946
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "living_temp",
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "living_temp",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "living-temp",
+              "placement": {
+                "height": 34.2265625,
+                "left": 300,
+                "top": 73,
+                "width": 178
+              },
+              "type": "metric-value"
+            }
+          ],
+          "name": "Element 1688475569256",
+          "placement": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100
+          },
+          "type": "frame"
+        },
+        "showAdvancedTypes": true
+      },
+      "pluginVersion": "10.1.0-121880pre",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P40AE60E18F02DE32"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT time, devicename as office_id, temp as office_temp FROM awair_sensor_data WHERE devicename = 'Office' LIMIT 50 ",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "*",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "bbbb88a8-89ab-4cde-b012-318921025026",
+                  "properties": {
+                    "field": "devicename",
+                    "operator": "equal",
+                    "value": [
+                      "Office"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "8ab89bb8-89ab-4cde-b012-318920808e4d",
+              "type": "group"
+            },
+            "whereString": "devicename = 'Office'"
+          },
+          "table": "awair_sensor_data"
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P40AE60E18F02DE32"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT time, devicename as living_id, temp as living_temp FROM awair_sensor_data WHERE devicename = 'Living Room' LIMIT 50 ",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "*",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "8a8a99bb-cdef-4012-b456-718921033843",
+                  "properties": {
+                    "field": "devicename",
+                    "operator": "equal",
+                    "value": [
+                      "Living Room"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "8ab89bb8-89ab-4cde-b012-318920808e4d",
+              "type": "group"
+            },
+            "whereString": "devicename = 'Living Room'"
+          },
+          "table": "awair_sensor_data"
+        }
+      ],
+      "title": "Canvas Test",
+      "type": "canvas"
     },
     {
       "datasource": {
