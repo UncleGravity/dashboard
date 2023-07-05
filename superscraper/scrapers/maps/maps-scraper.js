@@ -22,7 +22,7 @@ app.post('/maps', (req, res) => {
   handleMapsEndpoint(req, res);
 });
 
-app.post('/maps', (req, res) => {
+app.post('/maps_overland', (req, res) => {
   handleOverlandEndpoint(req, res);
 });
 
