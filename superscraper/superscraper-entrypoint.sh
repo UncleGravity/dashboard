@@ -8,6 +8,12 @@ cd /workspaces/superscraper
 npm run clean
 npm install
 
+# Mintable setup
+npm --prefix ./scrapers/money/mintable install
+npm --prefix ./scrapers/money/mintable run build
+mkdir -p ./scrapers/money/mintable/csv/
+# npm run install-and-build
+
 # Check if the PostgreSQL server is ready
 # TODO check that timecaledb + postgis extensions are installed and DB is ready to accept connections
 echo "Waiting for PostgreSQL server to become ready..."
