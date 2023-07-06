@@ -1,0 +1,3 @@
+[submodule "superscraper/scrapers/money/mintable"]
+	path = superscraper/scrapers/money/mintable
+	url = https://github.com/UncleGravity/mintable.git
