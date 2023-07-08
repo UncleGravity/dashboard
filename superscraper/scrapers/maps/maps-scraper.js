@@ -44,9 +44,21 @@ async function handleRootEndpoint(req, res) {
 
 async function handleMapsEndpoint(req, res) {
   console.log(JSON.stringify(req.body, null, 2));
-  res.json({ result: 'ok' });
-
   const locations = req.body.location;
+
+  /*
+       column_name     |        data_type         
+---------------------+--------------------------
+ time                | timestamp with time zone
+ coordinates         | USER-DEFINED
+ altitude            | double precision
+ horizontal_accuracy | integer
+ altitude_accuracy   | double precision
+ speed               | double precision
+ is_moving           | boolean
+ activity_type       | text
+ activity_confidence | integer
+ */
 
   const data = [];
   locations.forEach((location) => {
@@ -70,7 +82,7 @@ async function handleMapsEndpoint(req, res) {
       {
         name: 'horizontal_accuracy',
         value: location.coords.accuracy,
-        type: 'INTEGER',
+        type: 'DOUBLE PRECISION',
       },
       {
         name: 'altitude_accuracy',
@@ -95,15 +107,18 @@ async function handleMapsEndpoint(req, res) {
       {
         name: 'activity_confidence',
         value: location.activity.confidence,
-        type: 'INTEGER',
+        type: 'REAL',
       },
     ]);
   });
 
   try {
     await db.saveData(schema, tableName, data, uniqueColumns);
+    res.json({ result: 'ok' });
   } catch (error) {
     console.error('Error inserting location data', error);
+    res.status(500).json({ error: error.message });
+    //TODO: repeat this on other scrapers
   }
 }
 
