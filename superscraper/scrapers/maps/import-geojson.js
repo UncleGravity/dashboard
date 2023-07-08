@@ -3,6 +3,7 @@
 // First you must download your Google Maps data from here: https://takeout.google.com/settings/takeout
 // The Takeout data is then converted to GeoJSON using this tool: https://geoprocessing.online/tool/google-location-history/
 // TODO: Write a new script to convert the Takeout data to GeoJSON, instead of using the online tool.
+// TODO: Only import the data that is not already in the database
 
 const fs = require('fs');
 const path = require('path');
