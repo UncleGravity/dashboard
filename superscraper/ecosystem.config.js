@@ -18,6 +18,18 @@ module.exports = {
         args: 'run start -w superscraper-maps',
         interpreter: 'none',
       },
+      {
+        name: 'money',
+        script: 'npm',
+        args: 'run start -w superscraper-money',
+        interpreter: 'none',
+      },
+      // {
+      //   name: 'screentime',
+      //   script: 'npm',
+      //   args: 'run start -w superscraper-screentime',
+      //   interpreter: 'none',
+      // },
       // Add more workspaces as needed
     ],
   };
