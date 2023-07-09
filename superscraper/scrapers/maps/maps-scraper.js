@@ -1,8 +1,7 @@
-// This script reads location data from the Overland app (https://github.com/aaronpk/Overland-iOS) and from my scraper app, and saves it to the database.
-
 const express = require('express');
 const app = express();
 const db = require('../_utils/db.js');
+const geoTz = require('geo-tz');
 
 const schema = 'maps';
 const tableName = 'raw_visited_places';
@@ -43,7 +42,7 @@ async function handleRootEndpoint(req, res) {
 }
 
 async function handleMapsEndpoint(req, res) {
-  console.log(JSON.stringify(req.body, null, 2));
+  // console.log(JSON.stringify(req.body, null, 2));
   const locations = req.body.location;
 
   /*
@@ -63,11 +62,18 @@ async function handleMapsEndpoint(req, res) {
   const data = [];
   locations.forEach((location) => {
     const coordinates = `POINT(${location.coords.longitude} ${location.coords.latitude})`;
+    let tz = geoTz.find(location.coords.latitude, location.coords.longitude)[0] || ''; // Get local timezone with geo-tz
+
     data.push([
       {
         name: 'time',
         value: location.timestamp,
         type: 'TIMESTAMP WITH TIME ZONE',
+      },
+      {
+        name: 'timezone',
+        value: tz,
+        type: 'TEXT',
       },
       {
         name: 'coordinates',
