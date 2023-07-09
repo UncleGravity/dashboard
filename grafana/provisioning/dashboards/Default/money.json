@@ -1,403 +1,427 @@
 {
-    "annotations": {
-      "list": [
-        {
-          "builtIn": 1,
-          "datasource": {
-            "type": "grafana",
-            "uid": "-- Grafana --"
-          },
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "name": "Annotations & Alerts",
-          "type": "dashboard"
-        }
-      ]
-    },
-    "editable": true,
-    "fiscalYearStartMonth": 0,
-    "graphTooltip": 0,
-    "id": 7,
-    "links": [],
-    "liveNow": false,
-    "panels": [
+  "annotations": {
+    "list": [
       {
+        "builtIn": 1,
         "datasource": {
-          "type": "postgres",
-          "uid": "P40AE60E18F02DE32"
+          "type": "grafana",
+          "uid": "-- Grafana --"
         },
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "palette-classic"
-            },
-            "custom": {
-              "axisCenteredZero": false,
-              "axisColorMode": "text",
-              "axisLabel": "",
-              "axisPlacement": "auto",
-              "barAlignment": 0,
-              "drawStyle": "bars",
-              "fillOpacity": 39,
-              "gradientMode": "none",
-              "hideFrom": {
-                "legend": false,
-                "tooltip": false,
-                "viz": false
-              },
-              "lineInterpolation": "linear",
-              "lineWidth": 1,
-              "pointSize": 5,
-              "scaleDistribution": {
-                "type": "linear"
-              },
-              "showPoints": "auto",
-              "spanNulls": false,
-              "stacking": {
-                "group": "A",
-                "mode": "none"
-              },
-              "thresholdsStyle": {
-                "mode": "off"
-              }
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            },
-            "unit": "currencyUSD"
-          },
-          "overrides": []
-        },
-        "gridPos": {
-          "h": 8,
-          "w": 12,
-          "x": 0,
-          "y": 0
-        },
-        "id": 1,
-        "options": {
-          "legend": {
-            "calcs": [],
-            "displayMode": "list",
-            "placement": "bottom",
-            "showLegend": true
-          },
-          "tooltip": {
-            "mode": "single",
-            "sort": "none"
-          }
-        },
-        "targets": [
-          {
-            "datasource": {
-              "type": "postgres",
-              "uid": "P40AE60E18F02DE32"
-            },
-            "editorMode": "code",
-            "format": "table",
-            "rawQuery": true,
-            "rawSql": "-- SELECT \"time\", SUM(currentinusd) as \"Net Worth\"\n-- FROM money.balances\n-- GROUP BY \"time\"\n-- ORDER BY \"time\";\n\n-- SELECT * FROM money.balances\n\nSELECT \"time\", \nSUM(\n    CASE \n        WHEN \"type\" = 'credit_card' THEN -currentinusd\n        ELSE currentinusd\n    END\n) as \"Net Worth\"\nFROM money.balances\nGROUP BY \"time\"\nORDER BY \"time\";\n",
-            "refId": "A",
-            "sql": {
-              "columns": [
-                {
-                  "parameters": [],
-                  "type": "function"
-                }
-              ],
-              "groupBy": [
-                {
-                  "property": {
-                    "type": "string"
-                  },
-                  "type": "groupBy"
-                }
-              ],
-              "limit": 50
-            }
-          }
-        ],
-        "title": "Net Worth Over Time",
-        "type": "timeseries"
-      },
-      {
-        "datasource": {
-          "type": "postgres",
-          "uid": "P40AE60E18F02DE32"
-        },
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "thresholds"
-            },
-            "custom": {
-              "align": "auto",
-              "cellOptions": {
-                "type": "auto"
-              },
-              "inspect": false
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            }
-          },
-          "overrides": [
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "name"
-              },
-              "properties": [
-                {
-                  "id": "custom.width",
-                  "value": 227
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "time"
-              },
-              "properties": [
-                {
-                  "id": "custom.width",
-                  "value": 182
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "date"
-              },
-              "properties": [
-                {
-                  "id": "custom.width",
-                  "value": 114
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "accountid"
-              },
-              "properties": [
-                {
-                  "id": "custom.width",
-                  "value": 211
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "institution"
-              },
-              "properties": [
-                {
-                  "id": "custom.width",
-                  "value": 127
-                }
-              ]
-            }
-          ]
-        },
-        "gridPos": {
-          "h": 24,
-          "w": 12,
-          "x": 12,
-          "y": 0
-        },
-        "id": 2,
-        "options": {
-          "cellHeight": "sm",
-          "footer": {
-            "countRows": false,
-            "fields": "",
-            "reducer": [
-              "sum"
-            ],
-            "show": false
-          },
-          "showHeader": true,
-          "sortBy": []
-        },
-        "pluginVersion": "10.1.0-121880pre",
-        "targets": [
-          {
-            "datasource": {
-              "type": "postgres",
-              "uid": "P40AE60E18F02DE32"
-            },
-            "editorMode": "code",
-            "format": "table",
-            "rawQuery": true,
-            "rawSql": "SELECT TO_CHAR(time, 'YYYY-Mon-DD') as date, institution, name, category, amountinusd \nFROM money.transactions \nORDER BY date ASC;",
-            "refId": "A",
-            "sql": {
-              "columns": [
-                {
-                  "parameters": [],
-                  "type": "function"
-                }
-              ],
-              "groupBy": [
-                {
-                  "property": {
-                    "type": "string"
-                  },
-                  "type": "groupBy"
-                }
-              ],
-              "limit": 50
-            }
-          }
-        ],
-        "title": "Transactions",
-        "type": "table"
-      },
-      {
-        "datasource": {
-          "type": "postgres",
-          "uid": "P40AE60E18F02DE32"
-        },
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "thresholds"
-            },
-            "custom": {
-              "align": "auto",
-              "cellOptions": {
-                "type": "auto"
-              },
-              "inspect": false
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            }
-          },
-          "overrides": [
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "accountid"
-              },
-              "properties": [
-                {
-                  "id": "custom.width",
-                  "value": 376
-                }
-              ]
-            }
-          ]
-        },
-        "gridPos": {
-          "h": 8,
-          "w": 12,
-          "x": 0,
-          "y": 8
-        },
-        "id": 3,
-        "options": {
-          "cellHeight": "sm",
-          "footer": {
-            "countRows": false,
-            "fields": "",
-            "reducer": [
-              "sum"
-            ],
-            "show": false
-          },
-          "showHeader": true,
-          "sortBy": []
-        },
-        "pluginVersion": "10.1.0-121880pre",
-        "targets": [
-          {
-            "datasource": {
-              "type": "postgres",
-              "uid": "P40AE60E18F02DE32"
-            },
-            "editorMode": "code",
-            "format": "table",
-            "rawQuery": true,
-            "rawSql": "SELECT \n    CASE \n    WHEN accountid = 'A4kJ7zO4gOU63a6AJ9vpC6MaE7EmdatMv9Eg6' THEN 'Ally Bank'\n    WHEN accountid = 'yy10NJaywaiJ3RJzX4x9sYn7MNM1b7spKMn1K' THEN 'Ally Bank'\n    WHEN accountid = 'K7gxEzq7pqFQowQ894gvILZKJkJz7KFEeXBYZ' THEN 'Ally Bank'\n    WHEN accountid = 'kYkNBq1Y71uqOKqVNodkUJ7mZ4Z0ymCorjAw9' THEN 'Ally Bank'\n    WHEN accountid = 'vq6PY4jqNjsQZoQVe06kIN7eM3M4reCV98dNV' THEN 'Ally Bank'\n    WHEN accountid = 'acc_oi0gk7ogfo887j83nm000' THEN 'Capital One'\n    WHEN accountid = 'Yepkqg1A06fP9YY1o46yH6pdjDZ0ZvtzVM6Na' THEN 'Acorns'\n    WHEN accountid = 'eOM57P1od3iaMbb0OK78fEr1yqg7gLC4V3vM6' THEN 'Acorns'\n    WHEN accountid = 'vXJRAgz98vT5Qp6xy3EZSJ99Jq3yABfVBOdpM' THEN 'Wise'\n    WHEN accountid = 'Aowvr8je1Qh06dvV1j73TOppOy71LNHMk8Ewk' THEN 'Wise'\n\n    WHEN accountid = 'K1JD8Pbe0BuXQygVYaPota57jP3vd5hEZ3Byy' THEN 'Wise'\n    WHEN accountid = 'kQzr6ym4ALt7q0d3waZOT5qyAKdExqto4xAbv' THEN 'Wise'\n    WHEN accountid = 'Aowvr8je1Qh06dvV1j73TOpdvQg5XpiMk8Ewb' THEN 'Wise'\n    WHEN accountid = 'yQgmj4zY8rtEJ1xZqQd3TXKbZz4BxKUpLknRp' THEN 'Wise'\n    WHEN accountid = '3KjgLn65BJtd8JbZx7rDUbkLoA5yEkHoeYjPK' THEN 'Wise'\n    -- Add more WHEN conditions for each unique accountId\n    ELSE accountid\n    END as account,\n    -- institution,\n    currency,\n    CASE \n        WHEN \"type\" = 'credit_card' THEN -current\n        ELSE current\n    END as current,\n    CASE \n        WHEN \"type\" = 'credit_card' THEN -currentinusd\n        ELSE currentinusd\n    END as currentinusd\nFROM money.balances\n",
-            "refId": "A",
-            "sql": {
-              "columns": [
-                {
-                  "parameters": [],
-                  "type": "function"
-                }
-              ],
-              "groupBy": [
-                {
-                  "property": {
-                    "type": "string"
-                  },
-                  "type": "groupBy"
-                }
-              ],
-              "limit": 50
-            }
-          }
-        ],
-        "title": "Panel Title",
-        "type": "table"
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
       }
-    ],
-    "refresh": "",
-    "schemaVersion": 38,
-    "style": "dark",
-    "tags": [],
-    "templating": {
-      "list": []
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 7,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P40AE60E18F02DE32"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 39,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P40AE60E18F02DE32"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "-- SELECT \"time\", SUM(currentinusd) as \"Net Worth\"\n-- FROM money.balances\n-- GROUP BY \"time\"\n-- ORDER BY \"time\";\n\n-- SELECT * FROM money.balances\n\nSELECT \"time\", \nSUM(\n    CASE \n        WHEN \"type\" = 'credit_card' THEN -currentinusd\n        ELSE currentinusd\n    END\n) as \"Net Worth\"\nFROM money.balances\nGROUP BY \"time\"\nORDER BY \"time\";\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Net Worth Over Time",
+      "type": "timeseries"
     },
-    "time": {
-      "from": "now-6h",
-      "to": "now"
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P40AE60E18F02DE32"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "name"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 227
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "time"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 182
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "date"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 114
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "accountid"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 211
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "institution"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 127
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 24,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "10.1.0-121880pre",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P40AE60E18F02DE32"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT TO_CHAR(time, 'YYYY-Mon-DD') as date, institution, name, category, amountinusd \nFROM money.transactions \nORDER BY date ASC;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Transactions",
+      "type": "table"
     },
-    "timepicker": {},
-    "timezone": "",
-    "title": "Money",
-    "uid": "a6a6bede-e83b-4d70-9565-1f0da1c3f6dd",
-    "version": 6,
-    "weekStart": ""
-  }
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P40AE60E18F02DE32"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "accountid"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 376
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "account"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 107
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "currency"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 79
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "id": 3,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "10.1.0-121880pre",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P40AE60E18F02DE32"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n    CASE \n    WHEN accountid = 'A4kJ7zO4gOU63a6AJ9vpC6MaE7EmdatMv9Eg6' THEN 'Ally Bank'\n    WHEN accountid = 'yy10NJaywaiJ3RJzX4x9sYn7MNM1b7spKMn1K' THEN 'Ally Bank'\n    WHEN accountid = 'K7gxEzq7pqFQowQ894gvILZKJkJz7KFEeXBYZ' THEN 'Ally Bank'\n    WHEN accountid = 'kYkNBq1Y71uqOKqVNodkUJ7mZ4Z0ymCorjAw9' THEN 'Ally Bank'\n    WHEN accountid = 'vq6PY4jqNjsQZoQVe06kIN7eM3M4reCV98dNV' THEN 'Ally Bank'\n    WHEN accountid = 'acc_oi0gk7ogfo887j83nm000' THEN 'Capital One'\n    WHEN accountid = 'Yepkqg1A06fP9YY1o46yH6pdjDZ0ZvtzVM6Na' THEN 'Acorns'\n    WHEN accountid = 'eOM57P1od3iaMbb0OK78fEr1yqg7gLC4V3vM6' THEN 'Acorns'\n    WHEN accountid = 'vXJRAgz98vT5Qp6xy3EZSJ99Jq3yABfVBOdpM' THEN 'Wise'\n    WHEN accountid = 'Aowvr8je1Qh06dvV1j73TOppOy71LNHMk8Ewk' THEN 'Wise'\n\n    WHEN accountid = 'K1JD8Pbe0BuXQygVYaPota57jP3vd5hEZ3Byy' THEN 'Wise'\n    WHEN accountid = 'kQzr6ym4ALt7q0d3waZOT5qyAKdExqto4xAbv' THEN 'Wise'\n    WHEN accountid = 'Aowvr8je1Qh06dvV1j73TOpdvQg5XpiMk8Ewb' THEN 'Wise'\n    WHEN accountid = 'yQgmj4zY8rtEJ1xZqQd3TXKbZz4BxKUpLknRp' THEN 'Wise'\n    WHEN accountid = '3KjgLn65BJtd8JbZx7rDUbkLoA5yEkHoeYjPK' THEN 'Wise'\n    -- Add more WHEN conditions for each unique accountId\n    ELSE accountid\n    END as account,\n    institution as name,\n    currency,\n    CASE \n        WHEN \"type\" = 'credit_card' THEN -current\n        ELSE current\n    END as amount,\n    CASE \n        WHEN \"type\" = 'credit_card' THEN -currentinusd\n        ELSE currentinusd\n    END as inusd\nFROM money.balances\nWHERE time = (SELECT MAX(time) FROM money.balances);\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Panel Title",
+      "type": "table"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Money",
+  "uid": "a6a6bede-e83b-4d70-9565-1f0da1c3f6dd",
+  "version": 9,
+  "weekStart": ""
+}
