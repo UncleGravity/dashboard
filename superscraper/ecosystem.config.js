@@ -24,6 +24,12 @@ module.exports = {
         args: 'run start -w superscraper-money',
         interpreter: 'none',
       },
+      {
+        name: 'oura',
+        script: 'npm',
+        args: 'run start -w superscraper-oura',
+        interpreter: 'none',
+      },
       // {
       //   name: 'screentime',
       //   script: 'npm',

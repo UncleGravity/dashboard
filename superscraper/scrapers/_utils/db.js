@@ -44,7 +44,7 @@ async function doesTableExist(schema, tableName) {
 async function createTable(schema, tableName, columns, uniqueColumns) {
     // Check columns include "time"
     if (!columns.find(col => col.name === 'time')) {
-        throw new Error('Columns must include a "time" column');
+        throw new Error('Table must include a "time" column');
     }
 
     if (!columns || columns.length === 0) {
@@ -111,7 +111,7 @@ async function saveData(schema, tableName, data, uniqueColumns) {
     }
     
     // Create Schema
-    console.log(`Creating schema ${schema}`);
+    // console.log(`Creating schema ${schema}`);
     await createSchema(schema);
 
     // Create table if it doesn't exist
@@ -133,7 +133,7 @@ async function saveData(schema, tableName, data, uniqueColumns) {
         try {
           // Execute the INSERT query
           await pool.query(query.text, query.values);
-          console.log(`Inserted chunk ${i + 1}/${chunks.length} with ${chunk.length} rows into ${tableName}.`);
+          console.log(`Inserted chunk ${i + 1}/${chunks.length} with ${chunk.length} rows into ${schema}.${tableName}.`);
         } catch (error) {
           console.error(`Error occurred while inserting rows into ${schema}.${tableName}`, error);
           throw error;

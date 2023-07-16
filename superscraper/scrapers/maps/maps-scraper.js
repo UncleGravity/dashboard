@@ -64,14 +64,17 @@ async function handleMapsEndpoint(req, res) {
     const coordinates = `POINT(${location.coords.longitude} ${location.coords.latitude})`;
     let tz = geoTz.find(location.coords.latitude, location.coords.longitude)[0] || ''; // Get local timezone with geo-tz
 
+    // TODO: add more fields from the location object
+    // https://transistorsoft.github.io/react-native-background-geolocation/interfaces/location.html
+
     data.push([
       {
-        name: 'time',
+        name: 'time', // time in UTC+0
         value: location.timestamp,
         type: 'TIMESTAMP WITH TIME ZONE',
       },
       {
-        name: 'timezone',
+        name: 'timezone', // LOCAL timezone (generated from coordinates)
         value: tz,
         type: 'TEXT',
       },
