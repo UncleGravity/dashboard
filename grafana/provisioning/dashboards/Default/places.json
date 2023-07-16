@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 5,
+  "id": 8,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -184,8 +184,16 @@
                 "value": null
               },
               {
+                "color": "yellow",
+                "value": 5
+              },
+              {
+                "color": "orange",
+                "value": 10
+              },
+              {
                 "color": "red",
-                "value": 80
+                "value": 20
               }
             ]
           }
@@ -198,15 +206,20 @@
         "x": 12,
         "y": 0
       },
-      "id": 2,
+      "id": 3,
       "options": {
+        "basemap": {
+          "config": {},
+          "name": "Layer 0",
+          "type": "default"
+        },
         "controls": {
           "mouseWheelZoom": true,
-          "showAttribution": true,
+          "showAttribution": false,
           "showDebug": false,
-          "showMeasure": false,
-          "showScale": false,
-          "showZoom": true
+          "showMeasure": true,
+          "showScale": true,
+          "showZoom": false
         },
         "layers": [
           {
@@ -214,9 +227,10 @@
               "showLegend": true,
               "style": {
                 "color": {
+                  "field": "speed",
                   "fixed": "dark-green"
                 },
-                "opacity": 0.4,
+                "opacity": 0.5,
                 "rotation": {
                   "fixed": 0,
                   "max": 360,
@@ -250,14 +264,16 @@
           }
         ],
         "tooltip": {
-          "mode": "details"
+          "mode": "none"
         },
         "view": {
-          "allLayers": true,
-          "id": "zero",
+          "allLayers": false,
+          "id": "fit",
+          "lastOnly": true,
           "lat": 0,
+          "layer": "Layer 1",
           "lon": 0,
-          "zoom": 1
+          "zoom": 10
         }
       },
       "pluginVersion": "10.1.0-121880pre",
@@ -269,6 +285,7 @@
           },
           "editorMode": "code",
           "format": "table",
+          "hide": true,
           "rawQuery": true,
           "rawSql": "SELECT time, ST_X(coordinates::geometry) AS longitude, ST_Y(coordinates::geometry) AS latitude\nFROM maps.raw_visited_places\nWHERE $__timeFilter(time)\n",
           "refId": "A",
@@ -289,9 +306,220 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P40AE60E18F02DE32"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT time, \nST_X(coordinates::geometry) AS longitude, \nST_Y(coordinates::geometry) AS latitude,\nhorizontal_accuracy,\nspeed,\nis_moving,\nactivity_type,\nactivity_confidence\nFROM maps.raw_visited_places\nWHERE $__timeFilter(time)\nORDER BY time DESC",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
-      "title": "Raw Locations",
+      "title": "Raw Locations (all)",
+      "type": "geomap"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P40AE60E18F02DE32"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 5
+              },
+              {
+                "color": "orange",
+                "value": 10
+              },
+              {
+                "color": "red",
+                "value": 20
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 12,
+        "x": 12,
+        "y": 12
+      },
+      "id": 2,
+      "options": {
+        "basemap": {
+          "config": {},
+          "name": "Layer 0",
+          "type": "default"
+        },
+        "controls": {
+          "mouseWheelZoom": true,
+          "showAttribution": false,
+          "showDebug": false,
+          "showMeasure": true,
+          "showScale": true,
+          "showZoom": false
+        },
+        "layers": [
+          {
+            "config": {
+              "showLegend": true,
+              "style": {
+                "color": {
+                  "field": "speed",
+                  "fixed": "dark-green"
+                },
+                "opacity": 0.5,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "fixed": 5,
+                  "max": 15,
+                  "min": 2
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/circle.svg",
+                  "mode": "fixed"
+                },
+                "textConfig": {
+                  "fontSize": 12,
+                  "offsetX": 0,
+                  "offsetY": 0,
+                  "textAlign": "center",
+                  "textBaseline": "middle"
+                }
+              }
+            },
+            "location": {
+              "mode": "auto"
+            },
+            "name": "Layer 1",
+            "tooltip": true,
+            "type": "markers"
+          }
+        ],
+        "tooltip": {
+          "mode": "none"
+        },
+        "view": {
+          "allLayers": false,
+          "id": "fit",
+          "lastOnly": true,
+          "lat": 0,
+          "layer": "Layer 1",
+          "lon": 0,
+          "zoom": 10
+        }
+      },
+      "pluginVersion": "10.1.0-121880pre",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P40AE60E18F02DE32"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": true,
+          "rawQuery": true,
+          "rawSql": "SELECT time, ST_X(coordinates::geometry) AS longitude, ST_Y(coordinates::geometry) AS latitude\nFROM maps.raw_visited_places\nWHERE $__timeFilter(time)\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P40AE60E18F02DE32"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT time, \nST_X(coordinates::geometry) AS longitude, \nST_Y(coordinates::geometry) AS latitude,\nhorizontal_accuracy,\nspeed,\nis_moving,\nactivity_type,\nactivity_confidence\nFROM maps.raw_visited_places\nWHERE $__timeFilter(time) AND is_moving = FALSE\nORDER BY time DESC",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Raw Locations (stationary)",
       "type": "geomap"
     }
   ],
@@ -310,6 +538,6 @@
   "timezone": "",
   "title": "Places",
   "uid": "de264914-6c7a-4261-a1dc-72b40a9dbe82",
-  "version": 2,
+  "version": 6,
   "weekStart": ""
 }

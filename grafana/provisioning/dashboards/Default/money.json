@@ -33,49 +33,13 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "bars",
-            "fillOpacity": 39,
-            "gradientMode": "none",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
             }
           },
           "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
           "unit": "currencyUSD"
         },
         "overrides": []
@@ -86,17 +50,28 @@
         "x": 0,
         "y": 0
       },
-      "id": 1,
+      "id": 7,
       "options": {
+        "displayLabels": [],
         "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "values": [
+            "value"
+          ]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
         },
         "tooltip": {
-          "mode": "single",
-          "sort": "none"
+          "mode": "multi",
+          "sort": "asc"
         }
       },
       "targets": [
@@ -108,7 +83,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "-- SELECT \"time\", SUM(currentinusd) as \"Net Worth\"\n-- FROM money.balances\n-- GROUP BY \"time\"\n-- ORDER BY \"time\";\n\n-- SELECT * FROM money.balances\n\nSELECT \"time\", \nSUM(\n    CASE \n        WHEN \"type\" = 'credit_card' THEN -currentinusd\n        ELSE currentinusd\n    END\n) as \"Net Worth\"\nFROM money.balances\nGROUP BY \"time\"\nORDER BY \"time\";\n",
+          "rawSql": "SELECT category, \n       SUM(amountinusd) as total_amount \nFROM money.transactions \nWHERE \n    $__timeFilter(time) \n    AND (NOT category ILIKE '%Transfer%')\n    AND (NOT name ILIKE '%CAPITAL ONE AUTOPAY%')\n    AND amountinusd >= 0 \nGROUP BY category \nORDER BY total_amount DESC;\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -129,8 +104,8 @@
           }
         }
       ],
-      "title": "Net Worth Over Time",
-      "type": "timeseries"
+      "title": "Spending Categories",
+      "type": "piechart"
     },
     {
       "datasource": {
@@ -185,19 +160,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 182
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "date"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 114
+                "value": 163
               }
             ]
           },
@@ -224,11 +187,23 @@
                 "value": 127
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "date"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 109
+              }
+            ]
           }
         ]
       },
       "gridPos": {
-        "h": 24,
+        "h": 29,
         "w": 12,
         "x": 12,
         "y": 0
@@ -257,7 +232,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT TO_CHAR(time, 'YYYY-Mon-DD') as date, institution, name, category, amountinusd \nFROM money.transactions \nORDER BY date ASC;",
+          "rawSql": "SELECT TO_CHAR(time::date, 'YYYY-MM-DD') as date, institution, name, category, amountinusd \nFROM money.transactions \nWHERE $__timeFilter(time) \nORDER BY date DESC;\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -280,6 +255,274 @@
       ],
       "title": "Transactions",
       "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P40AE60E18F02DE32"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 8
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [],
+          "fields": "/^Net Worth$/",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "pluginVersion": "10.1.0-121880pre",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P40AE60E18F02DE32"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "-- SELECT \"time\", SUM(currentinusd) as \"Net Worth\"\n-- FROM money.balances\n-- GROUP BY \"time\"\n-- ORDER BY \"time\";\n\n-- SELECT * FROM money.balances\n\nSELECT \"time\", \nSUM(\n    CASE \n        WHEN \"type\" = 'credit_card' THEN -currentinusd\n        ELSE currentinusd\n    END\n) as \"Net Worth\"\nFROM money.balances\nGROUP BY \"time\"\nORDER BY \"time\" ASC;\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Net Worth",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P40AE60E18F02DE32"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 100
+              }
+            ]
+          },
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 8
+      },
+      "id": 5,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [],
+          "fields": "/^Money Spent$/",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "pluginVersion": "10.1.0-121880pre",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P40AE60E18F02DE32"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n    time_bucket('1 day', time) AS \"time\", \n    SUM(amountinusd) AS \"Money Spent\"\nFROM money.transactions\nWHERE $__timeFilter(time)\nAND (NOT category ILIKE '%Transfer%')\nAND (NOT name ILIKE '%CAPITAL ONE AUTOPAY%')\nAND amountinusd >= 0\nGROUP BY \"time\"\nORDER BY \"time\" ASC",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Spending Today",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P40AE60E18F02DE32"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "dashed"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 100
+              }
+            ]
+          },
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 8
+      },
+      "id": 6,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "colorByField": "Money Spent",
+        "fullHighlight": true,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P40AE60E18F02DE32"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n    time_bucket('1 day', time) AS \"time\", \n    SUM(amountinusd) AS \"Money Spent\"\nFROM money.transactions\nWHERE $__timeFilter(time)\nAND (NOT category ILIKE '%Transfer%')\nAND (NOT name ILIKE '%CAPITAL ONE AUTOPAY%')\nAND amountinusd >= 0\nGROUP BY \"time\"\nORDER BY \"time\" ASC",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Spending History",
+      "type": "barchart"
     },
     {
       "datasource": {
@@ -349,6 +592,18 @@
                 "value": 79
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "inusd"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "currencyUSD"
+              }
+            ]
           }
         ]
       },
@@ -356,7 +611,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 8
+        "y": 12
       },
       "id": 3,
       "options": {
@@ -403,8 +658,118 @@
           }
         }
       ],
-      "title": "Panel Title",
+      "title": "Account Balances",
       "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P40AE60E18F02DE32"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 39,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 21
+      },
+      "id": 1,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P40AE60E18F02DE32"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "-- SELECT \"time\", SUM(currentinusd) as \"Net Worth\"\n-- FROM money.balances\n-- GROUP BY \"time\"\n-- ORDER BY \"time\";\n\n-- SELECT * FROM money.balances\n\nSELECT \"time\", \nSUM(\n    CASE \n        WHEN \"type\" = 'credit_card' THEN -currentinusd\n        ELSE currentinusd\n    END\n) as \"Net Worth\"\nFROM money.balances\nGROUP BY \"time\"\nORDER BY \"time\";\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Net Worth Over Time",
+      "type": "timeseries"
     }
   ],
   "refresh": "",
@@ -415,13 +780,13 @@
     "list": []
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-7d",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Money",
   "uid": "a6a6bede-e83b-4d70-9565-1f0da1c3f6dd",
-  "version": 9,
+  "version": 15,
   "weekStart": ""
 }
