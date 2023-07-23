@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 8,
+  "id": 9,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -134,7 +134,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT time, ST_X(coordinates::geometry) AS longitude, ST_Y(coordinates::geometry) AS latitude, location\nFROM maps.google_maps_visited_places",
+          "rawSql": "SELECT time, ST_X(coordinates::geometry) AS longitude, ST_Y(coordinates::geometry) AS latitude, location\nFROM maps.google_maps_visited_points",
           "refId": "A",
           "sql": {
             "columns": [
@@ -538,6 +538,6 @@
   "timezone": "",
   "title": "Places",
   "uid": "de264914-6c7a-4261-a1dc-72b40a9dbe82",
-  "version": 6,
+  "version": 2,
   "weekStart": ""
 }

@@ -1,3 +1,6 @@
 [submodule "superscraper/scrapers/money/mintable"]
 	path = superscraper/scrapers/money/mintable
 	url = https://github.com/UncleGravity/mintable.git
+[submodule "superscraper/scrapers/maps/GoogleTakeoutLocationHistoryParser"]
+	path = superscraper/scrapers/maps/GoogleTakeoutLocationHistoryParser
+	url = https://github.com/UncleGravity/GoogleTakeoutLocationHistoryParser

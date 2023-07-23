@@ -14,6 +14,9 @@ npm --prefix ./scrapers/money/mintable run build
 mkdir -p ./scrapers/money/mintable/csv/
 # npm run install-and-build
 
+# Google Takeout Location History Parser setup
+npm --prefix ./scrapers/maps/GoogleTakeoutLocationHistoryParser install
+
 # Check if the PostgreSQL server is ready
 # TODO check that timecaledb + postgis extensions are installed and DB is ready to accept connections
 echo "Waiting for PostgreSQL server to become ready..."
