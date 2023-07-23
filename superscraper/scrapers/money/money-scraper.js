@@ -1,5 +1,6 @@
 const axios = require('axios');
 const fs = require('fs').promises;
+const path = require('path');
 const { exec } = require('child_process');
 const util = require('util');
 const db = require('../_utils/db.js');
@@ -102,7 +103,7 @@ async function main() {
 
 // Initial run
 main()
-    .catch(error => console.error(`An error occurred while running the main function: ${error}`))
+    .catch(error => console.error(`[${path.basename(__filename)}]: ${error}`))
     .finally( () => setTimeout(main, 6 * 60 * 60 * 1000) ); // Run every 6 hours
 
 async function fetchMintable() {
