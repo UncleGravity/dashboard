@@ -23,6 +23,19 @@
   "liveNow": false,
   "panels": [
     {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 14,
+      "panels": [],
+      "title": "HealthKit",
+      "type": "row"
+    },
+    {
       "datasource": {
         "type": "postgres",
         "uid": "P40AE60E18F02DE32"
@@ -58,7 +71,7 @@
         "h": 3,
         "w": 3,
         "x": 0,
-        "y": 0
+        "y": 1
       },
       "id": 5,
       "options": {
@@ -146,7 +159,7 @@
         "h": 3,
         "w": 3,
         "x": 3,
-        "y": 0
+        "y": 1
       },
       "id": 6,
       "options": {
@@ -208,6 +221,7 @@
             "mode": "thresholds"
           },
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -237,7 +251,7 @@
         "h": 3,
         "w": 3,
         "x": 6,
-        "y": 0
+        "y": 1
       },
       "id": 8,
       "options": {
@@ -265,7 +279,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT \n    time_bucket('1 day', time) AS \"time\", \n    SUM(value) AS \"Step Count\"\nFROM \n    healthkit.stepcount\nWHERE \n    $__timeFilter(time)\nGROUP BY \n    1\nORDER BY \n    \"time\" ASC\n",
+          "rawSql": "SELECT \n    time_bucket('1 day', time) AS \"time\", \n    SUM(value) AS \"Step Count\"\nFROM \n    healthkit.stepcount\nWHERE \n    $__timeFilter(time)\n    AND source = 'CRISPR'\nGROUP BY \n    1\nORDER BY \n    \"time\" ASC\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -300,6 +314,7 @@
             "mode": "thresholds"
           },
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -333,7 +348,7 @@
         "h": 3,
         "w": 3,
         "x": 9,
-        "y": 0
+        "y": 1
       },
       "id": 9,
       "options": {
@@ -387,28 +402,233 @@
     },
     {
       "datasource": {
-        "type": "datasource",
-        "uid": "grafana"
+        "type": "postgres",
+        "uid": "P40AE60E18F02DE32"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "fillOpacity": 80,
+            "gradientMode": "scheme",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#E24D42",
+                "value": 23400
+              },
+              {
+                "color": "#EF843C",
+                "value": 27000
+              },
+              {
+                "color": "#6ED0E0",
+                "value": 32400
+              },
+              {
+                "color": "#EAB839",
+                "value": 36000
+              }
+            ]
+          },
+          "unit": "dthms"
+        },
+        "overrides": []
       },
       "gridPos": {
-        "h": 3,
-        "w": 12,
+        "h": 4,
+        "w": 4,
         "x": 12,
-        "y": 0
+        "y": 1
       },
-      "id": 11,
+      "id": 20,
       "options": {
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        },
-        "content": "- For markdown syntax help: [commonmark.org/help](https://commonmark.org/help/)\n- sdfsdf",
-        "mode": "markdown"
+        "bucketOffset": 0,
+        "bucketSize": 900,
+        "combine": false,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        }
       },
-      "pluginVersion": "10.1.0-121880pre",
-      "title": "fsdf",
-      "type": "text"
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P40AE60E18F02DE32"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT bedtime_end, EXTRACT(EPOCH FROM total_sleep_duration) AS total_sleep_seconds FROM oura.sleep_session\nWHERE \n  type = 'long_sleep'\n  AND $__timeFilter(time)\nORDER BY time",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Sleep Duration Distribution",
+      "type": "histogram"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P40AE60E18F02DE32"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "fillOpacity": 80,
+            "gradientMode": "scheme",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1
+          },
+          "mappings": [],
+          "max": 64800,
+          "min": 21600,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#E24D42",
+                "value": 36000
+              },
+              {
+                "color": "#EAB839",
+                "value": 43200
+              },
+              {
+                "color": "#EF843C",
+                "value": 50400
+              }
+            ]
+          },
+          "unit": "dthms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 16,
+        "y": 1
+      },
+      "id": 18,
+      "options": {
+        "bucketOffset": 0,
+        "bucketSize": 1800,
+        "combine": false,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P40AE60E18F02DE32"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT \n  ((EXTRACT(EPOCH FROM (time AT TIME ZONE 'Asia/Taipei') - DATE_TRUNC('day', time AT TIME ZONE 'Asia/Taipei')) + 43200) % 86400) AS bed_time_seconds_in_day\nFROM oura.sleep_session\nWHERE \n  type = 'long_sleep'\n  AND $__timeFilter(time)\nORDER BY bed_time_seconds_in_day\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P40AE60E18F02DE32"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": true,
+          "rawQuery": true,
+          "rawSql": "SELECT \n  EXTRACT(EPOCH FROM (time AT TIME ZONE 'Asia/Taipei') - (DATE_TRUNC('day', time AT TIME ZONE 'Asia/Taipei') + INTERVAL '12 hours')) AS bed_time_seconds_in_day\nFROM oura.sleep_session\nWHERE \n  type != 'sleep'\nAND $__timeFilter(time)\nORDER BY bed_time_seconds_in_day\n",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Bed Time Distribution",
+      "type": "histogram"
     },
     {
       "datasource": {
@@ -425,27 +645,16 @@
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
-            "axisSoftMax": 10000,
-            "barAlignment": 0,
-            "drawStyle": "bars",
-            "fillOpacity": 8,
+            "fillOpacity": 80,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "stepBefore",
             "lineWidth": 1,
-            "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
             },
             "thresholdsStyle": {
               "mode": "off"
@@ -473,20 +682,30 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 3
+        "y": 4
       },
       "id": 1,
       "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": true,
+        "groupWidth": 0.7,
         "legend": {
           "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
         },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "normal",
         "tooltip": {
-          "mode": "single",
+          "mode": "multi",
           "sort": "none"
-        }
+        },
+        "xField": "time",
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 100
       },
       "targets": [
         {
@@ -497,7 +716,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT \n    time_bucket('1 day', time) AS \"time\", \n    SUM(value) AS \"Step Count\"\nFROM \n    healthkit.stepcount\nWHERE \n    $__timeFilter(time)\nGROUP BY \n    1\nORDER BY \n    \"time\" ASC\n",
+          "rawSql": "WITH days AS (\n  SELECT generate_series(\n    DATE_TRUNC('DAY', MIN(time)),\n    DATE_TRUNC('DAY', MAX(time)),\n    INTERVAL '1 day'\n  ) AS day\n  FROM \n    healthkit.stepcount\n  WHERE \n    $__timeFilter(time)\n    AND source = 'CRISPR'\n)\nSELECT \n    days.day AS \"time\", \n    COALESCE(SUM(value), 0) AS \"Step Count\"\nFROM \n    days\nLEFT JOIN healthkit.stepcount\n    ON days.day = DATE_TRUNC('DAY', time)\n\nWHERE source = 'CRISPR'\nGROUP BY \n    days.day\nORDER BY \n    days.day ASC\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -519,7 +738,7 @@
         }
       ],
       "title": "Steps",
-      "type": "timeseries"
+      "type": "barchart"
     },
     {
       "datasource": {
@@ -536,8 +755,8 @@
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
-            "fillOpacity": 62,
-            "gradientMode": "none",
+            "fillOpacity": 60,
+            "gradientMode": "scheme",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
@@ -568,7 +787,7 @@
                 "value": 27000
               },
               {
-                "color": "#EAB839",
+                "color": "yellow",
                 "value": 32400
               },
               {
@@ -585,13 +804,12 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 3
+        "y": 5
       },
-      "id": 10,
+      "id": 16,
       "options": {
-        "barRadius": 0,
+        "barRadius": 0.05,
         "barWidth": 0.97,
-        "colorByField": "Hours Slept",
         "fullHighlight": true,
         "groupWidth": 0.7,
         "legend": {
@@ -602,16 +820,15 @@
         },
         "orientation": "auto",
         "showValue": "auto",
-        "stacking": "none",
+        "stacking": "normal",
         "tooltip": {
           "mode": "multi",
           "sort": "none"
         },
-        "xField": "Time",
-        "xTickLabelRotation": 0,
-        "xTickLabelSpacing": 100
+        "xField": "bedtime_end",
+        "xTickLabelRotation": -30,
+        "xTickLabelSpacing": 0
       },
-      "pluginVersion": "10.1.0-121880pre",
       "targets": [
         {
           "datasource": {
@@ -620,37 +837,14 @@
           },
           "editorMode": "code",
           "format": "table",
-          "hide": false,
+          "hide": true,
           "rawQuery": true,
-          "rawSql": "SELECT \n  DATE_TRUNC('day', time - INTERVAL '5 hour') + INTERVAL '5 hour' AS \"Time\", \n  SUM(EXTRACT(EPOCH FROM (enddate - time))) AS \"Hours Slept\"\nFROM \n  sleepanalysis\nWHERE \n  source = 'Oura'\n  AND $__timeFilter(time) \n  AND value = 1\nGROUP BY \n  \"Time\"\nORDER BY \n  \"Time\" ASC;\n",
+          "rawSql": "WITH days AS (\n  SELECT generate_series(\n    DATE_TRUNC('DAY', MIN(bedtime_end)),\n    DATE_TRUNC('DAY', MAX(bedtime_end)),\n    INTERVAL '1 day'\n  ) AS day\n  FROM oura.sleep_session\n  WHERE $__timeFilter(bedtime_end)\n)\nSELECT\n  TO_CHAR(days.day, 'Mon-DD') AS bedtime_end,\n  COALESCE(EXTRACT(EPOCH FROM total_sleep_duration), 0) AS total_sleep_seconds\nFROM days\nLEFT JOIN oura.sleep_session\n  ON days.day = DATE_TRUNC('DAY', oura.sleep_session.time)\n  AND type != 'sleep'\nORDER BY days.day ASC\n",
           "refId": "A",
           "sql": {
             "columns": [
               {
-                "parameters": [
-                  {
-                    "name": "\"time\"",
-                    "type": "functionParameter"
-                  }
-                ],
-                "type": "function"
-              },
-              {
-                "parameters": [
-                  {
-                    "name": "source",
-                    "type": "functionParameter"
-                  }
-                ],
-                "type": "function"
-              },
-              {
-                "parameters": [
-                  {
-                    "name": "value",
-                    "type": "functionParameter"
-                  }
-                ],
+                "parameters": [],
                 "type": "function"
               }
             ],
@@ -663,8 +857,7 @@
               }
             ],
             "limit": 50
-          },
-          "table": "sleepanalysis"
+          }
         },
         {
           "datasource": {
@@ -673,9 +866,9 @@
           },
           "editorMode": "code",
           "format": "table",
-          "hide": true,
+          "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT \"time\", \"value\" FROM sleepanalysis WHERE $__timeFilter(time) and source = 'CRISPR' ",
+          "rawSql": "SELECT \n  -- day as bedtime_end, \n  time AS bedtime_start,\n  bedtime_end,\n  -- total_sleep_duration, \n  EXTRACT(EPOCH FROM total_sleep_duration) as total_sleep \nFROM oura.sleep_session  \nWHERE type = 'long_sleep'\nAND $__timeFilter(time) \nORDER BY time DESC",
           "refId": "B",
           "sql": {
             "columns": [
@@ -696,22 +889,8 @@
           }
         }
       ],
-      "title": "Sleep per Night",
-      "transparent": true,
+      "title": "Nightly Sleep",
       "type": "barchart"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 11
-      },
-      "id": 13,
-      "panels": [],
-      "title": "Row title",
-      "type": "row"
     },
     {
       "datasource": {
@@ -728,35 +907,23 @@
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "points",
-            "fillOpacity": 0,
+            "fillOpacity": 80,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "linear",
-            "lineStyle": {
-              "fill": "solid"
-            },
             "lineWidth": 1,
-            "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
             },
             "thresholdsStyle": {
               "mode": "off"
             }
           },
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -776,21 +943,31 @@
       "gridPos": {
         "h": 8,
         "w": 12,
-        "x": 0,
-        "y": 12
+        "x": 12,
+        "y": 13
       },
-      "id": 7,
+      "id": 19,
       "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": true,
+        "groupWidth": 0.7,
         "legend": {
           "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": false
         },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "normal",
         "tooltip": {
-          "mode": "single",
+          "mode": "multi",
           "sort": "none"
-        }
+        },
+        "xField": "bedtime_end",
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 100
       },
       "targets": [
         {
@@ -800,8 +977,9 @@
           },
           "editorMode": "code",
           "format": "table",
+          "hide": true,
           "rawQuery": true,
-          "rawSql": "select * from \"healthkit\".\"heartrate\" WHERE $__timeFilter(time) ORDER BY time DESC",
+          "rawSql": "WITH days AS (\n  SELECT generate_series(\n    DATE_TRUNC('DAY', MIN(bedtime_end)),\n    DATE_TRUNC('DAY', MAX(bedtime_end)),\n    INTERVAL '1 day'\n  ) AS day\n  FROM oura.sleep_session\n  WHERE $__timeFilter(bedtime_end)\n)\nSELECT\n  TO_CHAR(days.day, 'Mon-DD') AS bedtime_end,\n  COALESCE(restless_periods, 0) AS restless_periods\nFROM days\nLEFT JOIN oura.sleep_session\n  ON days.day = DATE_TRUNC('DAY', bedtime_end)\n  AND type != 'sleep'\nORDER BY days.day ASC\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -820,138 +998,7 @@
             ],
             "limit": 50
           }
-        }
-      ],
-      "title": "Heart Rate",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "postgres",
-        "uid": "P40AE60E18F02DE32"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "text",
-                "value": null
-              },
-              {
-                "color": "dark-blue",
-                "value": 1
-              },
-              {
-                "color": "text",
-                "value": 2
-              }
-            ]
-          }
         },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 12
-      },
-      "id": 3,
-      "options": {
-        "colorByField": "value",
-        "endField": "enddate",
-        "labelFields": [
-          "value"
-        ],
-        "showYAxis": true,
-        "sortBy": "startTime",
-        "sortOrder": "asc",
-        "startField": "time",
-        "textField": "Text"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "P40AE60E18F02DE32"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT \n  time, \n  enddate, \n  source as \"Text\", \n  value\nFROM sleepanalysis",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Sleep Analysis",
-      "type": "marcusolsson-gantt-panel"
-    },
-    {
-      "datasource": {
-        "type": "postgres",
-        "uid": "P40AE60E18F02DE32"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "continuous-GrYlRd"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 1
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 20
-      },
-      "id": 2,
-      "options": {
-        "colorByField": "value",
-        "endField": "enddate",
-        "showYAxis": true,
-        "sortBy": "startTime",
-        "sortOrder": "asc",
-        "startField": "time"
-      },
-      "pluginVersion": "10.1.0-121880pre",
-      "targets": [
         {
           "datasource": {
             "type": "postgres",
@@ -961,26 +1008,12 @@
           "format": "table",
           "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  enddate,\n  value,\n  source\nFROM healthkit.headphoneaudioexposure\n",
-          "refId": "C",
+          "rawSql": "SELECT \n  -- day as bedtime_end, \n  time AS bedtime_start,\n  bedtime_end,\n  -- total_sleep_duration, \n  -- EXTRACT(EPOCH FROM total_sleep_duration) as total_sleep \n  restless_periods\nFROM oura.sleep_session  \nWHERE type = 'long_sleep'\nAND $__timeFilter(time) \nORDER BY time DESC",
+          "refId": "B",
           "sql": {
             "columns": [
               {
-                "parameters": [
-                  {
-                    "name": "\"time\"",
-                    "type": "functionParameter"
-                  }
-                ],
-                "type": "function"
-              },
-              {
-                "parameters": [
-                  {
-                    "name": "value",
-                    "type": "functionParameter"
-                  }
-                ],
+                "parameters": [],
                 "type": "function"
               }
             ],
@@ -993,64 +1026,361 @@
               }
             ],
             "limit": 50
+          }
+        }
+      ],
+      "title": "Restless Periods",
+      "type": "barchart"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 21
+      },
+      "id": 13,
+      "panels": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P40AE60E18F02DE32"
           },
-          "table": "headphoneaudioexposure"
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "points",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineStyle": {
+                  "fill": "solid"
+                },
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 58
+          },
+          "id": 7,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "P40AE60E18F02DE32"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "select * from \"healthkit\".\"heartrate\" WHERE $__timeFilter(time) ORDER BY time DESC",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Heart Rate",
+          "type": "timeseries"
         },
         {
           "datasource": {
             "type": "postgres",
             "uid": "P40AE60E18F02DE32"
           },
-          "editorMode": "builder",
-          "format": "table",
-          "hide": true,
-          "rawSql": "SELECT \"time\", enddate, value FROM sleepanalysis LIMIT 50 ",
-          "refId": "D",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [
-                  {
-                    "name": "\"time\"",
-                    "type": "functionParameter"
-                  }
-                ],
-                "type": "function"
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
               },
-              {
-                "parameters": [
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
                   {
-                    "name": "enddate",
-                    "type": "functionParameter"
-                  }
-                ],
-                "type": "function"
-              },
-              {
-                "parameters": [
+                    "color": "text"
+                  },
                   {
-                    "name": "value",
-                    "type": "functionParameter"
+                    "color": "dark-blue",
+                    "value": 1
+                  },
+                  {
+                    "color": "text",
+                    "value": 2
                   }
-                ],
-                "type": "function"
+                ]
               }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
+            },
+            "overrides": []
           },
-          "table": "sleepanalysis"
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 58
+          },
+          "id": 3,
+          "options": {
+            "colorByField": "value",
+            "endField": "enddate",
+            "labelFields": [
+              "value"
+            ],
+            "showYAxis": true,
+            "sortBy": "startTime",
+            "sortOrder": "asc",
+            "startField": "time",
+            "textField": "Text"
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "P40AE60E18F02DE32"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT \n  time, \n  enddate, \n  source as \"Text\", \n  value\nFROM sleepanalysis",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Sleep Analysis",
+          "type": "marcusolsson-gantt-panel"
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P40AE60E18F02DE32"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "continuous-GrYlRd"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 1
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 66
+          },
+          "id": 2,
+          "options": {
+            "colorByField": "value",
+            "endField": "enddate",
+            "showYAxis": true,
+            "sortBy": "startTime",
+            "sortOrder": "asc",
+            "startField": "time"
+          },
+          "pluginVersion": "10.1.0-121880pre",
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "P40AE60E18F02DE32"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT\n  time,\n  enddate,\n  value,\n  source\nFROM healthkit.headphoneaudioexposure\n",
+              "refId": "C",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [
+                      {
+                        "name": "\"time\"",
+                        "type": "functionParameter"
+                      }
+                    ],
+                    "type": "function"
+                  },
+                  {
+                    "parameters": [
+                      {
+                        "name": "value",
+                        "type": "functionParameter"
+                      }
+                    ],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              },
+              "table": "headphoneaudioexposure"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "P40AE60E18F02DE32"
+              },
+              "editorMode": "builder",
+              "format": "table",
+              "hide": true,
+              "rawSql": "SELECT \"time\", enddate, value FROM sleepanalysis LIMIT 50 ",
+              "refId": "D",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [
+                      {
+                        "name": "\"time\"",
+                        "type": "functionParameter"
+                      }
+                    ],
+                    "type": "function"
+                  },
+                  {
+                    "parameters": [
+                      {
+                        "name": "enddate",
+                        "type": "functionParameter"
+                      }
+                    ],
+                    "type": "function"
+                  },
+                  {
+                    "parameters": [
+                      {
+                        "name": "value",
+                        "type": "functionParameter"
+                      }
+                    ],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              },
+              "table": "sleepanalysis"
+            }
+          ],
+          "title": "Headphone Audio Exposure",
+          "type": "marcusolsson-gantt-panel"
         }
       ],
-      "title": "Headphone Audio Exposure",
-      "type": "marcusolsson-gantt-panel"
+      "title": "Row title",
+      "type": "row"
     }
   ],
   "refresh": "",
@@ -1068,6 +1398,6 @@
   "timezone": "",
   "title": "HealthKit",
   "uid": "fea829a7-31f4-4a70-bb5f-a8eb91f40e32",
-  "version": 19,
+  "version": 31,
   "weekStart": ""
 }

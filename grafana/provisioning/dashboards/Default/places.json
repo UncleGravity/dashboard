@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 9,
+  "id": 8,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -538,6 +538,6 @@
   "timezone": "",
   "title": "Places",
   "uid": "de264914-6c7a-4261-a1dc-72b40a9dbe82",
-  "version": 2,
+  "version": 8,
   "weekStart": ""
 }
