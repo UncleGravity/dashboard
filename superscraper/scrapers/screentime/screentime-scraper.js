@@ -15,7 +15,7 @@ app.post('/test', (req, res) => {
 });
 
 app.post('/screentime', (req, res) => {
-      handleScreenTimeEndpoint(req, res);
+    handleScreenTimeEndpoint(req, res);
 });
 
 app.get('/', async (req, res) => {
@@ -24,7 +24,7 @@ app.get('/', async (req, res) => {
 
 // Start server
 app.listen(serverPort, () => {
-    console.log(`Server is running on port ${serverPort}`);
+    console.log(`ScreenTime Scraper server listening on port ${serverPort}`);
 });
 
 // Endpoints handling functions
@@ -60,6 +60,12 @@ async function saveScreenTimeData(screenTimeData) {
 
     const data = [];
     screenTimeData.forEach((entry) => {
+
+        // Hardcoded workaround because my laptop's device_id and device_name are null
+        // If your actual device name is NOTFOUND then may god have mercy on your soul
+        let device_id = entry.device_id || "NOTFOUND";
+        let device_name = entry.device_name || "NOTFOUND";
+
         data.push([
             {
                 name: 'time',
@@ -78,12 +84,12 @@ async function saveScreenTimeData(screenTimeData) {
             },
             {
                 name: 'device_id',
-                value: entry.device_id,
+                value: device_id,
                 type: 'TEXT',
             },
             {
                 name: 'device_name',
-                value: entry.device_name,
+                value: device_name,
                 type: 'TEXT',
             },
             {
@@ -108,6 +114,12 @@ async function saveScreenTimeWebData(screenTimeWebData) {
 
     const data = [];
     screenTimeWebData.forEach((entry) => {
+
+        // Hardcoded workaround because my laptop's device_id and device_name are null
+        // If your actual device name is NOTFOUND then may god have mercy on your soul
+        let device_id = entry.device_id || "NOTFOUND";
+        let device_name = entry.device_name || "NOTFOUND";
+
         data.push([
             {
                 name: 'time',
@@ -131,12 +143,12 @@ async function saveScreenTimeWebData(screenTimeWebData) {
             },
             {
                 name: 'device_id',
-                value: entry.device_id,
+                value: device_id,
                 type: 'TEXT',
             },
             {
                 name: 'device_name',
-                value: entry.device_name,
+                value: device_name,
                 type: 'TEXT',
             },
             {

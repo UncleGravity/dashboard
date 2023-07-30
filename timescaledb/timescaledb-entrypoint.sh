@@ -23,9 +23,10 @@ psql -U $POSTGRES_USER -d $POSTGRES_DB -c 'CREATE SCHEMA awair;'
 psql -U $POSTGRES_USER -d $POSTGRES_DB -c 'CREATE SCHEMA healthkit;'
 psql -U $POSTGRES_USER -d $POSTGRES_DB -c 'CREATE SCHEMA maps;'
 psql -U $POSTGRES_USER -d $POSTGRES_DB -c 'CREATE SCHEMA money;' # push this to server
-# psql -U $POSTGRES_USER -d $POSTGRES_DB -c 'CREATE SCHEMA screentime;'
-# psql -U $POSTGRES_USER -d $POSTGRES_DB -c 'CREATE SCHEMA oura;' 
+psql -U $POSTGRES_USER -d $POSTGRES_DB -c 'CREATE SCHEMA screentime;'
+psql -U $POSTGRES_USER -d $POSTGRES_DB -c 'CREATE SCHEMA oura;'
+psql -U $POSTGRES_USER -d $POSTGRES_DB -c 'CREATE SCHEMA withings;' 
 # psql -U $POSTGRES_USER -d $POSTGRES_DB -c 'CREATE SCHEMA strava;' 
 
 # Set search path for new user
-psql -U $POSTGRES_USER -d $POSTGRES_DB -c "ALTER USER $POSTGRES_USER SET search_path = telegraf,awair,healthkit,maps,money,public;"
+psql -U $POSTGRES_USER -d $POSTGRES_DB -c "ALTER USER $POSTGRES_USER SET search_path = telegraf,awair,healthkit,maps,money,screentime,oura,withings,public;"
