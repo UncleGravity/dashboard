@@ -2805,7 +2805,7 @@
       "type": "row"
     }
   ],
-  "refresh": "10s",
+  "refresh": "30s",
   "schemaVersion": 38,
   "style": "dark",
   "tags": [],
@@ -2844,6 +2844,6 @@
   "timezone": "browser",
   "title": "Server and Docker",
   "uid": "LLtQxKb4z",
-  "version": 9,
+  "version": 11,
   "weekStart": ""
 }

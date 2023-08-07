@@ -101,7 +101,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT time, value FROM healthkit.bodymass WHERE $__timeFilter(time) ORDER BY time ASC",
+          "rawSql": "-- SELECT time, value FROM healthkit.bodymass WHERE $__timeFilter(time) ORDER BY time ASC\nSELECT time, weight * 2.20462 AS weight_in_lbs \nFROM withings.weight \nWHERE $__timeFilter(time) \nORDER BY time ASC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -188,7 +188,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT time, (value * 100) AS bodyfatpercentage\nFROM healthkit.bodyfatpercentage\nORDER BY time ASC\n",
+          "rawSql": "-- SELECT time, (value * 100) AS bodyfatpercentage\n-- FROM healthkit.bodyfatpercentage\n-- ORDER BY time ASC\n\nSELECT time, fat\nFROM withings.fat\nORDER BY time ASC\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1529,6 +1529,6 @@
   "timezone": "",
   "title": "HealthKit",
   "uid": "fea829a7-31f4-4a70-bb5f-a8eb91f40e32",
-  "version": 34,
+  "version": 36,
   "weekStart": ""
 }
