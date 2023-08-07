@@ -72,6 +72,19 @@ services:
     env_file:
       - .env
 
+  # NGINX ##################################################
+  nginx:
+    container_name: nginx
+    image: nginx:stable-alpine
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 80:80
+    depends_on:
+      - superscraper
+      - grafana
+      - pgadmin
+
   # SUPERSCRAPER ##################################################
   superscraper:
     container_name: superscraper
@@ -83,9 +96,11 @@ services:
       - ./superscraper:/workspaces/superscraper
 
     ports:
+    - ${SCRAPER_HOMEPAGE_PORT}:${SCRAPER_HOMEPAGE_PORT}
     - ${SCRAPER_HEALTHKIT_PORT}:${SCRAPER_HEALTHKIT_PORT}
     - ${SCRAPER_MAPS_PORT}:${SCRAPER_MAPS_PORT}
     - ${SCRAPER_SCREENTIME_PORT}:${SCRAPER_SCREENTIME_PORT}
+    - ${SCRAPER_MINTABLE_PORT}:${SCRAPER_MINTABLE_PORT}
       
     # Overrides default command so things don't shut down after the process ends.
     # command: sleep infinity
@@ -108,8 +123,8 @@ services:
       - ${GRAFANA_PORT}:3000
     volumes:
       - grafana-data:/var/lib/grafana
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
       - ./grafana/provisioning:/etc/grafana/provisioning
-      # - ./grafana/data/dashboards:/etc/dashboards
     depends_on:
       - timescaledb
       - telegraf
@@ -120,7 +135,6 @@ services:
     # (Adding the "ports" property to this file will not forward from a Codespace.)
 
 volumes:
-  prometheus-data:
   timescaledb-data:
   grafana-data:
   pgadmin-data:

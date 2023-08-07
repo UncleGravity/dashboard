@@ -12,7 +12,6 @@ npm install
 npm --prefix ./scrapers/money/mintable install
 npm --prefix ./scrapers/money/mintable run build
 mkdir -p ./scrapers/money/mintable/csv/
-# npm run install-and-build
 
 # Google Takeout Location History Parser setup
 npm --prefix ./scrapers/maps/GoogleTakeoutLocationHistoryParser install
@@ -23,8 +22,6 @@ echo "Waiting for PostgreSQL server to become ready..."
 while ! nc -z -v -w 5 "${POSTGRES_URL}" "${POSTGRES_PORT}"; do
   sleep 1
 done
-
-# sleep 5 # Not needed anymore as we wait for PostgreSQL server readiness above
 
 # Import geojson data
 # TODO Only do it if the table is empty?

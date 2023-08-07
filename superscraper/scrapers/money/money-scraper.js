@@ -130,6 +130,7 @@ async function fetchMintable() {
 
 async function plaidAccountSetup() {
   return new Promise((resolve, reject) => {
+    console.log("Starting account setup...")
     const child = spawn('node', ['./mintable/lib/scripts/cli.js', 'account-setup', '--config-file', './mintable/secrets/mintable.jsonc']);
 
     const timeout = setTimeout(() => {
@@ -138,9 +139,11 @@ async function plaidAccountSetup() {
     }, 3600000); // Set timeout to 1 hour
 
     child.stdout.on('data', async (data) => {
+      console.log(`stdout: ${data}`);
       const message = data.toString();
 
       if (message.includes('Account setup in progress')) {
+        console.log("Account setup loaded, sendig ntfy.sh notification");
         // build url domain:8000/?environment=development
         const domain = "http://139.59.235.86"
         const url = `${domain}:8000/?environment=development`;
@@ -151,10 +154,10 @@ async function plaidAccountSetup() {
         // Button 2: ntfy.sh/large-language-mofongo/stop (closes the process)
         // https://docs.ntfy.sh/publish/#action-buttons
         axios({
-          url: `ntfy.sh/${ntfyEndPoint}`,
+          url: `http://ntfy.sh/${ntfyEndPoint}`,
           method: 'post',
           headers: {
-            "Click": url
+            "Click": `${url}`
           },
           data: 'acorns fucked again'
         })
