@@ -1,6 +1,7 @@
 # Use the timescale/timescaledb:latest-pg14 image as the base
 FROM timescale/timescaledb:latest-pg14
 # FROM timescale/timescaledb-ha:pg14-oss # <-- This image includes posgGIS but doesn't work on ARM64
+# FROM timescaledev/timescaledb-ha:pg14-oss # <-- includes posgGIS and ARM64, but not recommended for production
 
 # Set environment variables for PostGIS
 ENV POSTGIS_VERSION="3.3.3"
