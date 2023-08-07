@@ -13,7 +13,7 @@ const BALANCE_TABLE_NAME = 'balances';
 const BALANCE_UNIQUE_COLUMNS = ['time', 'accountId'];
 const TRANSACTION_UNIQUE_COLUMNS = ['time', 'transactionId'];
 const JSON_FILE_PATH = './mintable/csv/raw-transactions.json';
-const WISE_ACCESS_TOKEN = process.env.WISE_ACCESS_TOKEN;
+const EXCHANGERATES_API_KEY = process.env.EXCHANGERATES_API_KEY;
 
 async function main() {
   try {
@@ -27,7 +27,7 @@ async function main() {
     // Load and parse JSON data
     const fileData = await fs.readFile(JSON_FILE_PATH, 'utf-8');
     const jsonData = await JSON.parse(fileData);
-    const currentTime = new Date().toISOString();
+    const currentTime = new Date().toISOString().slice(0, 10);
 
     // Iterate over each account
     for (const accountData of jsonData) {
@@ -63,7 +63,7 @@ async function main() {
       const transactionsData = [];
 
       for (const transaction of accountData.transactions) {
-        const amountInUSD = await convertToUsd(transaction.amount, transaction.currency, transaction.date);
+        const amountInUSD = await convertToUsd(transaction.amount, transaction.currency, transaction.date.slice(0, 10));
 
         const transactionData = [
           { name: "time", value: transaction.date, type: 'TIMESTAMPTZ' },
@@ -101,11 +101,6 @@ async function main() {
     console.error(`An unexpected error occurred: ${error}`);
   }
 }
-
-// Initial run
-main()
-  .catch(error => console.error(`[${path.basename(__filename)}]: ${error}`))
-  .finally(() => setTimeout(main, 6 * 60 * 60 * 1000)); // Run every 6 hours
 
 async function fetchMintable() {
   try {
@@ -178,49 +173,22 @@ async function plaidAccountSetup() {
   });
 }
 
-async function convertToUsdSimple(amount, currency) {
-  if (currency === 'USD') {
-    return amount;
-  }
-
-  try {
-    const response = await axios.get(`https://open.er-api.com/v6/latest/${currency}`);
-    const data = response.data;
-
-    if (data.result !== 'success') {
-      throw new Error(`Error fetching exchange rate data: ${data.error}`);
-    }
-
-    if (!data.rates['USD']) {
-      throw new Error(`Currency ${currency} not found in exchange rate API.`);
-    }
-
-    return amount * data.rates['USD'];
-  } catch (error) {
-    throw new Error(`Error fetching exchange rate data: ${error}`);
-  }
-}
-
-// TODO: change to https://exchangeratesapi.io/
 async function convertToUsd(amount, currency, time) {
   if (currency === 'USD') {
     return amount;
   }
 
   try {
-    const response = await axios.get(`https://api.transferwise.com/v1/rates?source=${currency}&target=USD&time=${time}`, {
-      headers: {
-        'Authorization': 'Bearer ' + WISE_ACCESS_TOKEN
-      }
-    });
+    const response = await axios.post(`http://api.exchangeratesapi.io/v1/${time}?access_key=${EXCHANGERATES_API_KEY}&symbols=USD,${currency}`);
 
     const data = response.data;
 
-    if (data.length === 0) {
+    if (!data.rates || !data.rates.USD || !data.rates[currency]) {
       throw new Error(`Error fetching exchange rate data.`);
     }
 
-    return amount * data[0].rate;
+    const conversionRate = data.rates.USD / data.rates[currency];
+    return amount * conversionRate;
   } catch (error) {
     if (error.response && error.response.status === 400) {
       throw new Error(`Invalid currency or bad request: ${error}`);
@@ -230,3 +198,7 @@ async function convertToUsd(amount, currency, time) {
   }
 }
 
+// Initial run
+main()
+  .catch(error => console.error(`[${path.basename(__filename)}]: ${error}`))
+  .finally(() => setTimeout(main, 6 * 60 * 60 * 1000)); // Run every 6 hours
